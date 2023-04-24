@@ -545,6 +545,7 @@ export default {
         Action: type, // 指令
         Content: this.user[field]
       }
+      console.log(content);
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
     },
     roomModalAction(type) {
