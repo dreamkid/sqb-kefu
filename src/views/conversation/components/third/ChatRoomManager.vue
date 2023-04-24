@@ -21,10 +21,9 @@
               <div style="width: 230px">
                 <div class="avatar-popover-top-head">
                   <div class="avatar-popover-top-head-left ellipsis">{{ memberDetail.FullName }}</div>
-                  <img style="width: 12px" src="@/assets/images/man.png" />
                   <el-popover popper-class="more-popover" style="position: absolute; right: 0" placement="bottom-start"
-                    trigger="hover">
-                    <i slot="reference" class="el-icon-more" style="cursor: pointer"></i>
+                  trigger="hover">
+                  <i slot="reference" class="el-icon-more" style="cursor: pointer"></i>
                     <div>
                       <el-menu style="border-right: none">
                         <el-menu-item index="1">
@@ -41,7 +40,7 @@
                     </div>
                   </el-popover>
                 </div>
-                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }}</div>
+                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }} <img class="ml-10" style="width: 12px" src="@/assets/images/man.png" /></div>
                 <div class="avatar-popover-top-item ellipsis" :title="memberDetail.FriendId">
                   微信号：{{ memberDetail.FriendId }}
                 </div>
@@ -196,11 +195,17 @@
           <div class="room-action-modal-body-left-items scroll">
             <div class="room-action-modal-body-left-item"
               v-for="(item, i) in roomActionModal.type === 2 ? friends : roomMembers" :key="i">
-              <el-checkbox v-if="roomActionModal.type === 2"
-                v-model="roomActionModal.selected[item.friendId]"></el-checkbox>
-              <el-checkbox v-else v-model="roomActionModal.membersSelected[item.weChatId]"></el-checkbox>
-              <el-avatar :size="30" shape="square" :src="item.avatar"></el-avatar>
-              {{ item.nickname }}
+              <el-checkbox class="box-check" v-if="roomActionModal.type === 2"
+                v-model="roomActionModal.selected[item.friendId]">
+                <div class="box-text">
+                  <el-avatar :size="30" shape="square" :src="item.avatar"></el-avatar>
+                  <div>{{ item.nickname }}</div>
+                </div>
+              </el-checkbox>
+              <el-checkbox class="box-check" v-else v-model="roomActionModal.membersSelected[item.weChatId]">
+                <el-avatar :size="30" shape="square" :src="item.avatar"></el-avatar>
+                <div>{{ item.nickname }}</div>
+              </el-checkbox>
             </div>
           </div>
         </div>
@@ -338,7 +343,7 @@ export default {
       get: function () {
         let data = []
         if (this.roomActionModal.searchVal)
-        data = this.membersNotFriend.filter((item) => {
+          data = this.membersNotFriend.filter((item) => {
             return item.nickname.includes(this.roomActionModal.searchVal)
           })
         else data = this.membersNotFriend || []
@@ -358,7 +363,7 @@ export default {
             return item.FriendNick.includes(this.roomActionModal.memberSearchVal)
           })
         else data = this.currentFriend.ShowNameList || []
-
+        console.log(data);
         return data
       }
     },
@@ -545,6 +550,7 @@ export default {
         Action: type, // 指令
         Content: this.user[field]
       }
+      console.log(content);
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
     },
     roomModalAction(type) {
@@ -558,13 +564,14 @@ export default {
       this.roomActionModal.visible = false
     },
     roomModalConfirm() {
+      this.roomActionModal.visible = false
       const content = {
         WeChatId: this.currentFriend.WeChatId, // 商家所属微信号
         ChatRoomId: this.currentFriend.UserName, // 群聊id
         Action: this.roomActionModal.type, // 指令
         Content:
           this.roomActionModal.type === 2
-            ? this.friendsSelected.map((item) => item.FriendId).join(',')
+            ? this.friendsSelected.map((item) => item.friendId).join(',')
             : this.roomMembersSelected.map((item) => item.UserName).join(',')
       }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
@@ -672,6 +679,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.box-check {
+  display: flex;
+  width: 100% !important;
+  align-items: center;
+  .box-text {
+    display: flex;
+    align-items: flex-end;
+  }
+}
+
+
 .chat-rooms-manager {
   position: relative;
   flex: 1 1 auto;
@@ -869,7 +887,13 @@ export default {
     }
   }
 }
-
+.avatar-popover-top-item{
+  display: flex;
+  align-items: center;
+  .ml-10{
+    margin-left: 10px;
+  }
+}
 .tabs {
   display: flex;
   justify-content: center;
@@ -902,6 +926,5 @@ export default {
       z-index: 1000;
     }
   }
-}
-</style>
+}</style>
 
