@@ -564,13 +564,14 @@ export default {
       this.roomActionModal.visible = false
     },
     roomModalConfirm() {
+      this.roomActionModal.visible = false
       const content = {
         WeChatId: this.currentFriend.WeChatId, // 商家所属微信号
         ChatRoomId: this.currentFriend.UserName, // 群聊id
         Action: this.roomActionModal.type, // 指令
         Content:
           this.roomActionModal.type === 2
-            ? this.friendsSelected.map((item) => item.FriendId).join(',')
+            ? this.friendsSelected.map((item) => item.friendId).join(',')
             : this.roomMembersSelected.map((item) => item.UserName).join(',')
       }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
