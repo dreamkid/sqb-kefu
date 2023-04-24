@@ -48,7 +48,6 @@
               <div style="width: 215px">
                 <div class="avatar-popover-top-head">
                   <div class="avatar-popover-top-head-left ellipsis">{{ memberDetail.FullName }}</div>
-                  <img style="width: 12px" src="@/assets/images/man.png" />
                   <el-popover
                     popper-class="more-popover"
                     style="position: absolute; right: 0"
@@ -72,7 +71,7 @@
                     </div>
                   </el-popover>
                 </div>
-                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }}</div>
+                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }} <img class="ml-10" style="width: 12px" src="@/assets/images/man.png" /></div>
                 <div class="avatar-popover-top-item ellipsis" :title="memberDetail.FriendId">
                   微信号：{{ memberDetail.FriendId }}
                 </div>
@@ -2508,6 +2507,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.avatar-popover-top-item{
+  display: flex;
+  align-items: center;
+  .ml-10{
+    margin-left: 10px;
+  }
+}
 .big-img-box {
   position: absolute;
   top: 0;
