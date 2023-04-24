@@ -5,25 +5,15 @@
       <div class="tab" :class="{ 'tab-active': currentInfoTab === 2 }" @click="infoTabChange(2)">屏蔽列表</div>
     </div>
     <div class="room-search" :style="{ position: isMore ? 'sticky' : 'relative' }">
-      <el-input
-        v-model="searchOptions.val"
-        prefix-icon="el-icon-search"
-        placeholder="搜索群成员"
-        clearable
-        @input="search"
-      ></el-input>
+      <el-input v-model="searchOptions.val" prefix-icon="el-icon-search" placeholder="搜索群成员" clearable
+        @input="search"></el-input>
     </div>
 
     <div class="room-members" v-if="currentInfoTab === 1">
       <div class="room-member" v-for="(item, i) in members" :key="i">
         <el-popover v-model="popoverVisible[item.UserName]" trigger="manual" placement="left" width="305">
-          <el-avatar
-            slot="reference"
-            :size="45"
-            shape="square"
-            :src="item.FriendAvatar"
-            @click.native.stop="showMemberDetail(item)"
-          ></el-avatar>
+          <el-avatar slot="reference" :size="45" shape="square" :src="item.FriendAvatar"
+            @click.native.stop="showMemberDetail(item)"></el-avatar>
 
           <div class="avatar-popover">
             <div class="avatar-popover-top">
@@ -32,12 +22,8 @@
                 <div class="avatar-popover-top-head">
                   <div class="avatar-popover-top-head-left ellipsis">{{ memberDetail.FullName }}</div>
                   <img style="width: 12px" src="@/assets/images/man.png" />
-                  <el-popover
-                    popper-class="more-popover"
-                    style="position: absolute; right: 0"
-                    placement="bottom-start"
-                    trigger="hover"
-                  >
+                  <el-popover popper-class="more-popover" style="position: absolute; right: 0" placement="bottom-start"
+                    trigger="hover">
                     <i slot="reference" class="el-icon-more" style="cursor: pointer"></i>
                     <div>
                       <el-menu style="border-right: none">
@@ -131,11 +117,8 @@
         </div>
       </div>
     </div>
-    <div
-      v-if="(currentInfoTab === 1 && membersData.length > 10) || (currentInfoTab === 2 && shieldDataSource.length > 4)"
-      class="room-control"
-      @click="roomControl"
-    >
+    <div v-if="(currentInfoTab === 1 && membersData.length > 10) || (currentInfoTab === 2 && shieldDataSource.length > 4)"
+      class="room-control" @click="roomControl">
       {{ isMore ? '收起' : '展开更多' }}
       <i v-if="isMore" class="el-icon-arrow-up"></i>
       <i v-else class="el-icon-arrow-down"></i>
@@ -145,8 +128,7 @@
       <i v-if="isMore" class="el-icon-arrow-up"></i>
     </div>
     <el-divider
-      v-if="(currentInfoTab === 1 && members.length) || (currentInfoTab === 2 && shieldData.length)"
-    ></el-divider>
+      v-if="(currentInfoTab === 1 && members.length) || (currentInfoTab === 2 && shieldData.length)"></el-divider>
     <div class="room-action">
       <div class="room-til">群聊名称</div>
       <div class="room-des" style="margin-bottom: 10px">
@@ -181,75 +163,41 @@
       <div class="room-item">
         <div class="room-item-left">显示群员昵称</div>
         <div class="room-item-right">
-          <el-switch
-            v-model="user.ChatShowMemberNameEnable"
-            active-color="#13ce66"
-            inactive-color="#E5E5E5"
-            @change="updateInfo(32, 'ChatShowMemberNameEnable')"
-          ></el-switch>
+          <el-switch v-model="user.ChatShowMemberNameEnable" active-color="#13ce66" inactive-color="#E5E5E5"
+            @change="updateInfo(32, 'ChatShowMemberNameEnable')"></el-switch>
         </div>
       </div>
       <div class="room-item" style="margin: 10px 0">
         <div class="room-item-left">消息免打扰</div>
         <div class="room-item-right">
-          <el-switch
-            v-model="user.ChatMsgImmunityEnable"
-            active-color="#13ce66"
-            inactive-color="#E5E5E5"
-            @change="updateInfo(30, 'ChatMsgImmunityEnable')"
-          ></el-switch>
+          <el-switch v-model="user.ChatMsgImmunityEnable" active-color="#13ce66" inactive-color="#E5E5E5"
+            @change="updateInfo(30, 'ChatMsgImmunityEnable')"></el-switch>
         </div>
       </div>
       <div class="room-item">
         <div class="room-item-left">保存到通讯录</div>
         <div class="room-item-right">
-          <el-switch
-            v-model="user.ChatSaveMailEnable"
-            active-color="#13ce66"
-            inactive-color="#E5E5E5"
-            @change="updateInfo(31, 'ChatSaveMailEnable')"
-          ></el-switch>
+          <el-switch v-model="user.ChatSaveMailEnable" active-color="#13ce66" inactive-color="#E5E5E5"
+            @change="updateInfo(31, 'ChatSaveMailEnable')"></el-switch>
         </div>
       </div>
 
       <el-button class="room-collect-btn">采集非微信好友到库（{{ notFriends.length || 0 }}）</el-button>
     </div>
 
-    <el-dialog
-      width="540px"
-      class="room-action-modal"
-      append-to-body
-      :visible="roomActionModal.visible"
-      :before-close="roomModalClose"
-      :show-close="false"
-      destroy-on-close
-    >
+    <el-dialog width="540px" class="room-action-modal" append-to-body :visible="roomActionModal.visible"
+      :before-close="roomModalClose" :show-close="false" destroy-on-close>
       <div class="room-action-modal-body">
         <div class="room-action-modal-body-left">
-          <el-input
-            v-if="roomActionModal.type === 2"
-            v-model="roomActionModal.searchVal"
-            prefix-icon="el-icon-search"
-            placeholder="搜索"
-            clearable
-          ></el-input>
-          <el-input
-            v-if="roomActionModal.type === 3"
-            v-model="roomActionModal.memberSearchVal"
-            prefix-icon="el-icon-search"
-            placeholder="搜索"
-            clearable
-          ></el-input>
+          <el-input v-if="roomActionModal.type === 2" v-model="roomActionModal.searchVal" prefix-icon="el-icon-search"
+            placeholder="搜索" clearable></el-input>
+          <el-input v-if="roomActionModal.type === 3" v-model="roomActionModal.memberSearchVal"
+            prefix-icon="el-icon-search" placeholder="搜索" clearable></el-input>
           <div class="room-action-modal-body-left-items scroll">
-            <div
-              class="room-action-modal-body-left-item"
-              v-for="(item, i) in roomActionModal.type === 2 ? friends : roomMembers"
-              :key="i"
-            >
-              <el-checkbox
-                v-if="roomActionModal.type === 2"
-                v-model="roomActionModal.selected[item.friendId]"
-              ></el-checkbox>
+            <div class="room-action-modal-body-left-item"
+              v-for="(item, i) in roomActionModal.type === 2 ? friends : roomMembers" :key="i">
+              <el-checkbox v-if="roomActionModal.type === 2"
+                v-model="roomActionModal.selected[item.friendId]"></el-checkbox>
               <el-checkbox v-else v-model="roomActionModal.membersSelected[item.weChatId]"></el-checkbox>
               <el-avatar :size="30" shape="square" :src="item.avatar"></el-avatar>
               {{ item.nickname }}
@@ -267,11 +215,8 @@
           </div>
           <div class="room-action-modal-body-right-body">
             <div class="room-action-modal-body-right-body-items scroll">
-              <div
-                class="room-action-modal-body-right-body-item"
-                v-for="(item, i) in roomActionModal.type === 2 ? friendsSelected : roomMembersSelected"
-                :key="i"
-              >
+              <div class="room-action-modal-body-right-body-item"
+                v-for="(item, i) in roomActionModal.type === 2 ? friendsSelected : roomMembersSelected" :key="i">
                 <el-avatar :size="30" shape="square" :src="item.avatar"></el-avatar>
                 <div class="room-action-modal-body-right-body-item-bottom ellipsis" :title="item.nickname">
                   {{ item.nickname }}
@@ -287,15 +232,8 @@
       </div>
     </el-dialog>
 
-    <el-dialog
-      width="580px"
-      class="chat-record-modal"
-      append-to-body
-      :visible="chatRecordModal.visible"
-      :before-close="chatRecordModalClose"
-      :show-close="false"
-      destroy-on-close
-    >
+    <el-dialog width="580px" class="chat-record-modal" append-to-body :visible="chatRecordModal.visible"
+      :before-close="chatRecordModalClose" :show-close="false" destroy-on-close>
       <div class="chat-record-modal-title" slot="title">
         <div>
           {{ currentFriend.ShowName }}({{ currentFriend.ShowNameList ? currentFriend.ShowNameList.length : 0 }})
@@ -304,58 +242,35 @@
       </div>
       <div class="chat-record-modal-body">
         <div class="chat-record-modal-search">
-          <el-input
-            v-model="chatRecordModal.searchVal"
-            prefix-icon="el-icon-search"
-            placeholder="搜索"
-            clearable
-          ></el-input>
+          <el-input v-model="chatRecordModal.searchVal" prefix-icon="el-icon-search" placeholder="搜索"
+            clearable></el-input>
         </div>
 
         <el-divider></el-divider>
 
         <div class="chat-record-modal-tabs">
-          <div
-            class="chat-record-modal-tab"
-            :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 1 }"
-            @click="chatRecordModalTabChange(1)"
-          >
+          <div class="chat-record-modal-tab" :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 1 }"
+            @click="chatRecordModalTabChange(1)">
             全部
           </div>
-          <div
-            class="chat-record-modal-tab"
-            :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 2 }"
-            @click="chatRecordModalTabChange(2)"
-          >
+          <div class="chat-record-modal-tab" :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 2 }"
+            @click="chatRecordModalTabChange(2)">
             文件
           </div>
-          <div
-            class="chat-record-modal-tab"
-            :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 3 }"
-            @click="chatRecordModalTabChange(3)"
-          >
+          <div class="chat-record-modal-tab" :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 3 }"
+            @click="chatRecordModalTabChange(3)">
             图片与视频
           </div>
-          <div
-            class="chat-record-modal-tab"
-            :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 4 }"
-            @click="chatRecordModalTabChange(4)"
-          >
+          <div class="chat-record-modal-tab" :class="{ 'chat-record-modal-tab-active': chatRecordModal.currentTab === 4 }"
+            @click="chatRecordModalTabChange(4)">
             链接
           </div>
         </div>
       </div>
     </el-dialog>
 
-    <el-dialog
-      width="400px"
-      class="add-friend-modal"
-      append-to-body
-      :visible="addFriendModal.visible"
-      :before-close="addFriendModalClose"
-      :show-close="false"
-      destroy-on-close
-    >
+    <el-dialog width="400px" class="add-friend-modal" append-to-body :visible="addFriendModal.visible"
+      :before-close="addFriendModalClose" :show-close="false" destroy-on-close>
       <div class="add-friend-til">申请添加朋友</div>
       <div>
         <div class="add-friend-item-til">发送添加朋友申请</div>
@@ -390,7 +305,7 @@ export default {
         val: undefined
       },
       user: {},
-      roomActionModal: { visible: false, selected: {}, membersSelected: {} },
+      roomActionModal: { visible: false, selected: {}, membersSelected: {}, searchVal: '' },
       chatRecordModal: { visible: false, currentTab: 1 },
       popoverVisible: {},
       memberDetail: {}, // 群成员详情
@@ -402,7 +317,7 @@ export default {
       shieldDataSource: [],
       shieldData: [],
       shieldDataSelected: [],
-      shieldAllChecked: false
+      shieldAllChecked: false,
     }
   },
   computed: {
@@ -422,10 +337,9 @@ export default {
     friends: {
       get: function () {
         let data = []
-
         if (this.roomActionModal.searchVal)
-          data = this.membersNotFriend.filter((item) => {
-            return item.membersNotFriend.includes(this.roomActionModal.searchVal)
+        data = this.membersNotFriend.filter((item) => {
+            return item.nickname.includes(this.roomActionModal.searchVal)
           })
         else data = this.membersNotFriend || []
 
@@ -510,8 +424,8 @@ export default {
         this.shieldDataSource = this.shieldDataOrigin =
           currentFriend && currentFriend.ShowNameList
             ? currentFriend.ShowNameList.filter(
-                (item) => item.FriendShieldGroupEnable || item.FriendShieldAllGroupEnable
-              ).map((item) => ({ ...item }))
+              (item) => item.FriendShieldGroupEnable || item.FriendShieldAllGroupEnable
+            ).map((item) => ({ ...item }))
             : []
         this.shieldData = this.shieldDataSource.slice(0, 4)
       },
@@ -531,7 +445,7 @@ export default {
       })
     })
   },
-  mounted() {},
+  mounted() { },
   methods: {
     infoTabChange(tab) {
       this.currentInfoTab = tab
@@ -770,19 +684,23 @@ export default {
     padding: 12px 8px;
     background-color: #fff;
     z-index: 999;
+
     .el-input__inner {
       height: 34px;
       line-height: 34px;
     }
+
     .el-input__icon {
       line-height: 34px;
     }
   }
+
   .room-members {
     display: flex;
     flex-wrap: wrap;
     margin-top: 12px;
     padding: 0 5px;
+
     .room-member {
       width: 25%;
       display: flex;
@@ -790,18 +708,22 @@ export default {
       align-items: center;
       margin-bottom: 8px;
       font-size: 12px;
+
       .el-avatar {
         margin-bottom: 5px;
       }
+
       .room-member-name {
         width: 85%;
         color: #000000;
         text-align: center;
       }
+
       .room-member-company {
         width: 85%;
         color: #ff931f;
       }
+
       .room-member-icon {
         width: 45px;
         height: 45px;
@@ -811,6 +733,7 @@ export default {
         border: 1px dashed #979797;
         margin-bottom: 5px;
         cursor: pointer;
+
         .el-icon-plus,
         .el-icon-minus {
           color: #979797;
@@ -818,6 +741,7 @@ export default {
       }
     }
   }
+
   .room-control {
     font-size: 12px;
     color: #666666;
@@ -825,6 +749,7 @@ export default {
     margin-top: 15px;
     cursor: pointer;
   }
+
   .room-control-sticky {
     position: sticky;
     bottom: 0px;
@@ -837,14 +762,18 @@ export default {
     cursor: pointer;
     z-index: 1001;
   }
+
   .el-divider {
     margin: 12px 0;
   }
+
   .room-action {
     padding: 0 5px 12px;
+
     .room-til {
       margin-bottom: 5px;
     }
+
     .room-des {
       display: flex;
       align-items: center;
@@ -856,6 +785,7 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+
       :deep(.el-input) {
         .el-input__inner {
           border: none;
@@ -864,16 +794,18 @@ export default {
         }
       }
     }
+
     .room-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      .room-item-left {
-      }
-      .room-item-right {
-      }
+
+      .room-item-left {}
+
+      .room-item-right {}
     }
+
     :deep(.room-collect-btn) {
       width: 100%;
       margin-top: 24px;
@@ -887,24 +819,30 @@ export default {
   .shield-members {
     .shield-members-head {
       padding: 0px 8px;
+
       .el-button {
         margin-right: 8px;
       }
     }
+
     .shield-members-items {
       padding: 8px 0 0;
+
       .shield-members-item {
         display: flex;
         align-items: center;
         margin-bottom: 12px;
         padding: 0px 8px;
+
         .el-checkbox {
           margin-right: 8px;
         }
+
         .el-avatar {
           margin-right: 6px;
         }
       }
+
       .shield-members-items-head {
         display: flex;
         align-items: center;
@@ -913,13 +851,16 @@ export default {
         border: 1px solid #ededed;
         margin-bottom: 8px;
         color: #666666;
+
         .el-checkbox {
           margin-right: 8px;
         }
+
         .shield-members-items-head-item {
           display: inline-block;
           width: 45px;
           margin-right: 6px;
+
           &:nth-child(2) {
             text-align: center;
           }
@@ -933,6 +874,7 @@ export default {
   display: flex;
   justify-content: center;
   padding: 0 10px;
+
   .tab {
     flex: 1;
     text-align: center;
@@ -942,9 +884,11 @@ export default {
     font-weight: 600;
     cursor: pointer;
   }
+
   .tab-active {
     position: relative;
     color: #0cc160;
+
     &::after {
       position: absolute;
       content: '';
