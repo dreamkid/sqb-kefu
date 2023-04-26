@@ -1292,10 +1292,11 @@ export default {
     },
     // base64解码 & 不同类型的消息解读
     decodeChat(chat) {
-      //console.log('decodeChat', chat)
+      console.log('decodeChat', chat)
       try {
         let content = chat.Content
         const regJson = new RegExp(/^{.+}$/)
+        const httpRole=/((https?:\/\/|www\.)[\w.]*[a-zA-Z])/gi
         let jContent = {}
         let thumb = ''
         let str = ''
@@ -1312,7 +1313,15 @@ export default {
         switch (chat.ContentType) {
           // 文本 1
           case 'Text':
-          case 1:
+            case 1:
+            // content=content.replace(/^\n+|\n+$/g, '').replace(httpRole,`<a href=$1>$1</a>`)
+            content=content.replace(/^\n+|\n+$/g, '').replace(httpRole, (match) => {
+              let matchHttp =match;
+              if (match.startsWith('www.')) {
+              matchHttp = 'http://' + match;
+              }
+                return `<a href="${matchHttp}">${match}</a>`;
+              });
             return phiz.qqFaceImgMap(content)
           // 图片 2
           case 'Picture':
