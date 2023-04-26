@@ -248,6 +248,7 @@ const actions = {
       MsgType: 'ChatRoomActionTask',
       Content: content
     }
+
     // 发送消息
     commit('SEND_SOCK', msg)
 
@@ -258,6 +259,9 @@ const actions = {
       }
     }
     doc.TaskId = content.taskId
+    console.log('-------------------------获取发送完之后的消息');
+    console.log(doc);
+    console.log(doc.Content);
     // 操作保存本地nedb chatRoomTask
     dispatch('nedb/AddChatRoomTask', doc, { root: true })
   },

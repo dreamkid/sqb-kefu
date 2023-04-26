@@ -550,7 +550,9 @@ export default {
         Action: type, // 指令
         Content: this.user[field]
       }
-      console.log(content);
+      if (type == 33) {
+        this.$store.commit('conversation/SET_GROUP_CHAT_INFO', content.Content);
+      }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
     },
     roomModalAction(type) {
