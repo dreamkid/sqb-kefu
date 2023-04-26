@@ -118,6 +118,14 @@ export default {
       noticeModal: { visible: false }
     }
   },
+  watch:{
+    currentFriend:function (newV,oldV) {
+      console.log('走了watch');
+      console.log(newV);
+      console.log(oldV);
+    },
+    deep:true
+  },
   computed: {
     ...mapState(['currentUser']),
     ...mapGetters({
