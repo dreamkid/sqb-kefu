@@ -22,8 +22,8 @@
                 <div class="avatar-popover-top-head">
                   <div class="avatar-popover-top-head-left ellipsis">{{ memberDetail.FullName }}</div>
                   <el-popover popper-class="more-popover" style="position: absolute; right: 0" placement="bottom-start"
-                  trigger="hover">
-                  <i slot="reference" class="el-icon-more" style="cursor: pointer"></i>
+                    trigger="hover">
+                    <i slot="reference" class="el-icon-more" style="cursor: pointer"></i>
                     <div>
                       <el-menu style="border-right: none">
                         <el-menu-item index="1">
@@ -40,7 +40,8 @@
                     </div>
                   </el-popover>
                 </div>
-                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }} <img class="ml-10" style="width: 12px" src="@/assets/images/man.png" /></div>
+                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }} <img class="ml-10"
+                    style="width: 12px" src="@/assets/images/man.png" /></div>
                 <div class="avatar-popover-top-item ellipsis" :title="memberDetail.FriendId">
                   微信号：{{ memberDetail.FriendId }}
                 </div>
@@ -63,12 +64,11 @@
                 <span>邀请入群</span>
               </div>
             </div>
-
             <el-divider></el-divider>
             <div class="avatar-popover-bottom">
-              <el-button v-if="memberDetail.IsFriend">发消息</el-button>
-              <el-button v-else @click="addFriend">添加通讯录</el-button>
-              <el-button @click="atSomebody(item)">@Ta</el-button>
+              <el-button v-if="memberDetail.FriendId != currentFriend.WeChatId" @click="addFriend">添加通讯录</el-button>
+              <el-button v-if="memberDetail.FriendId != currentFriend.WeChatId" @click="atSomebody(item)">@Ta</el-button>
+              <el-button v-else>发消息</el-button>
               <el-button>加入黑名单</el-button>
               <el-button>加入白名单</el-button>
             </div>
@@ -312,7 +312,6 @@ export default {
       user: {},
       roomActionModal: { visible: false, selected: {}, membersSelected: {}, searchVal: '' },
       chatRecordModal: { visible: false, currentTab: 1 },
-      popoverVisible: {},
       memberDetail: {}, // 群成员详情
       addFriendModal: { visible: false, Message: undefined, Remark: undefined },
 
@@ -328,6 +327,9 @@ export default {
   computed: {
     ...mapState('nedb', {
       friendsList: 'friends' // 当前的通讯录列表
+    }),
+    ...mapState('conversation',{
+      popoverVisible:'popoverVisible' 
     }),
     ...mapGetters({
       currentFriend: 'conversation/currentFriend',
@@ -363,7 +365,6 @@ export default {
             return item.FriendNick.includes(this.roomActionModal.memberSearchVal)
           })
         else data = this.currentFriend.ShowNameList || []
-        console.log(data);
         return data
       }
     },
@@ -591,7 +592,6 @@ export default {
     showMemberDetail(item) {
       //console.log(item)
       //名片
-
       this.popoverVisible[item.UserName] = true
       Object.keys(this.popoverVisible).forEach((key) => {
         if (key !== item.UserName) this.popoverVisible[key] = false
@@ -681,6 +681,7 @@ export default {
   display: flex;
   width: 100% !important;
   align-items: center;
+
   .box-text {
     display: flex;
     align-items: flex-end;
@@ -885,13 +886,16 @@ export default {
     }
   }
 }
-.avatar-popover-top-item{
+
+.avatar-popover-top-item {
   display: flex;
   align-items: center;
-  .ml-10{
+
+  .ml-10 {
     margin-left: 10px;
   }
 }
+
 .tabs {
   display: flex;
   justify-content: center;
@@ -924,5 +928,6 @@ export default {
       z-index: 1000;
     }
   }
-}</style>
+}
+</style>
 
