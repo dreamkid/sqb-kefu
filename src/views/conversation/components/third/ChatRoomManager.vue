@@ -437,6 +437,8 @@ export default {
     }
   },
   created() {
+      console.log('----------------user------------');
+      console.log(this.user);
     Bus.$on('memberDetailChange', (friend) => {
       this.memberDetail = {
         ...this.memberDetail,
@@ -549,13 +551,17 @@ export default {
         Action: type, // 指令
         Content: this.user[field]
       }
+    
+      console.log('----------updateInfo的content----------');
+      console.log(content);
       if (type === 32) {
         this.$store.commit('conversation/SET_CHAT_SHOW_MEMBER_NAME_ENABLE', content.Content)
+      }
       if (type == 33) {
         this.$store.commit('conversation/SET_GROUP_CHAT_INFO', content.Content);
       }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
-    }},
+    },
     roomModalAction(type) {
       this.roomActionModal.type = type
       this.roomActionModal.visible = true

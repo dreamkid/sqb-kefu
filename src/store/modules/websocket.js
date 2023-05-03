@@ -248,7 +248,7 @@ const actions = {
       Content: content
     }
     // 发送消息 
-
+    console.log(content,'走了ChatRoomActionTask');
     // 发送消息
     commit('SEND_SOCK', msg)
 
