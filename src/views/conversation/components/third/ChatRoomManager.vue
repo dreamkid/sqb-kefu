@@ -555,7 +555,7 @@ export default {
         this.$store.commit('conversation/SET_GROUP_CHAT_INFO', content.Content);
       }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
-    },
+    }},
     roomModalAction(type) {
       this.roomActionModal.type = type
       this.roomActionModal.visible = true
