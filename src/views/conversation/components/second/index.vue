@@ -109,22 +109,14 @@ export default {
     AnswerWindow,
     ShowChats,
     Info,
-    Friends
+    Friends,
   },
   data() {
     return {
       tab: undefined,
       friendTab: undefined,
-      noticeModal: { visible: false }
+      noticeModal: { visible: false },
     }
-  },
-  watch:{
-    currentFriend:function (newV,oldV) {
-      console.log('走了watch');
-      console.log(newV);
-      console.log(oldV);
-    },
-    deep:true
   },
   computed: {
     ...mapState(['currentUser']),

@@ -413,7 +413,7 @@ export default {
           Ping(process.env.VUE_APP_API_URL + '/ping')
             .then(function (delta) {
               _this.ping = delta
-              console.log('Ping time was ' + String(delta) + ' ms')
+              // console.log('Ping time was ' + String(delta) + ' ms')
             })
             .catch(function (err) {
               console.error('Could not ping remote URL', err)

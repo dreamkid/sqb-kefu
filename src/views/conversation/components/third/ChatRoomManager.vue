@@ -551,6 +551,8 @@ export default {
       }
       if (type === 32) {
         this.$store.commit('conversation/SET_CHAT_SHOW_MEMBER_NAME_ENABLE', content.Content)
+      if (type == 33) {
+        this.$store.commit('conversation/SET_GROUP_CHAT_INFO', content.Content);
       }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
     },

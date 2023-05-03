@@ -248,6 +248,8 @@ const actions = {
       Content: content
     }
     // 发送消息 
+
+    // 发送消息
     commit('SEND_SOCK', msg)
 
     const doc = {}
@@ -259,6 +261,10 @@ const actions = {
     // console.log('doc:', doc)
     doc.TaskId = content.taskId
     // 操作保存本地nedb chatRoomTask  业务逻辑 有用  db:  database;
+    console.log('-------------------------获取发送完之后的消息');
+    console.log(doc);
+    console.log(doc.Content);
+    // 操作保存本地nedb chatRoomTask
     dispatch('nedb/AddChatRoomTask', doc, { root: true })
   },
   // sdk 获取群二维码 返回 PullChatRoomQrCodeTaskResultNotice

@@ -513,6 +513,13 @@ const actions = {
 
 // mutations
 const mutations = {
+  // 群聊信息设置
+  SET_GROUP_CHAT_INFO: (state, data) => {
+    Object.keys(state.currentFriends).forEach(content => {
+      state.currentFriends[content].Remark = data;
+    })
+  },
+
   SET_CURRENT_CHATS_CACHE_STORE: (state, data) => {
     state.currentChatsCacheStore = data
   },
