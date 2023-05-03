@@ -204,7 +204,8 @@
               v-if="
                 currentFriendId.indexOf('chatroom') > 0 &&
                 !chat.IsSend &&
-                !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType)
+                !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType) &&
+                currentFriend.ChatShowMemberNameEnable
               "
               class="chat-nick"
             >
@@ -657,8 +658,6 @@ import Bus from '@/utils/bus'
 import filters from '@/filters'
 const { timeFilter } = filters
 
-import nedb from '@/db/nedb'
-
 import RecordModal from './RecordModal.vue'
 
 export default {
@@ -742,6 +741,7 @@ export default {
     }
   },
   computed: {
+
     ...mapState('nedb', {
       friends: 'friends', // 通讯录列表
       chatRooms: 'chatRooms', // 当前的群聊列表
@@ -754,7 +754,7 @@ export default {
       conversations: 'conversations',
       conversationLockMap: 'conversationLockMap',
       currentChatsStore: 'currentChatsStore',
-      currentChatsCacheStore: 'currentChatsCacheStore'
+      currentChatsCacheStore: 'currentChatsCacheStore',
     }),
     ...mapState(['currentUser']),
     ...mapGetters({
@@ -806,7 +806,6 @@ export default {
 
     chatsFilter() {
       let data = [...this.currentChats.map((item) => ({ ...item }))]
-      console.log(data)
       return data
     },
 
@@ -2502,7 +2501,8 @@ export default {
         this.popoverVisible[key] = false
       })
     })
-  }
+  },
+
 }
 </script>
 

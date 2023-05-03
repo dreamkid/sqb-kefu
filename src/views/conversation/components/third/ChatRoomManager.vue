@@ -418,7 +418,6 @@ export default {
   watch: {
     currentFriend: {
       handler(currentFriend) {
-        // console.log('currentFriend', currentFriend)
         this.user = {
           ...currentFriend,
           NickName: currentFriend.NickName || '--',
@@ -550,7 +549,9 @@ export default {
         Action: type, // 指令
         Content: this.user[field]
       }
-      console.log(content);
+      if (type === 32) {
+        this.$store.commit('conversation/SET_CHAT_SHOW_MEMBER_NAME_ENABLE', content.Content)
+      }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
     },
     roomModalAction(type) {
