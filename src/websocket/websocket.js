@@ -52,6 +52,8 @@ function createWebSocket(url) {
  * @param {*} agentData
  */
 function sendSock(agentData) {
+  console.log('-----------agentData------------');
+  console.log(agentData);
   // 若是ws开启状态
   if (WebSocketObj && WebSocketObj.readyState === WebSocketObj.OPEN) {
     // 发送指令

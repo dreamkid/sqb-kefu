@@ -47,6 +47,7 @@ const state = {
   retTips: '', // 朋友圈提示
   circleTask: {}, // 指令信息
   bigImageMap: {}, // 大图信息
+  showNickName: true,
   // ============== third part 用到的变量 =======
   publicReply: [], // 公共话术
   publicTags: [], // 公共标签
@@ -162,6 +163,8 @@ const getters = {
   },
   // 当前微信选中的好友的id
   currentFriendId: (state, getters) => {
+    console.log('-------------currrentFriend----------')
+    console.log(getters.currentFriend)
     return getters.currentFriend.FriendId || getters.currentFriend.UserName || ''
   },
 
@@ -511,6 +514,13 @@ const actions = {
 
 // mutations
 const mutations = {
+  // 群聊信息设置
+  SET_GROUP_CHAT_INFO: (state, data) => {
+    Object.keys(state.currentFriends).forEach(content => {
+      state.currentFriends[content].Remark = data;
+    })
+  },
+
   SET_CURRENT_CHATS_CACHE_STORE: (state, data) => {
     state.currentChatsCacheStore = data
   },
@@ -892,6 +902,29 @@ const mutations = {
   SET_CURRENT_FRIEND: (state, friendInfo) => {
     state.currentFriend = friendInfo
   },
+
+  // 设置群昵称显示状态
+  SET_CHAT_SHOW_MEMBER_NAME_ENABLE(state, bool) {
+    // console.log('----------------state.currentFriends-----------')
+    // console.log(state.currentFriends)
+    // console.log(Object.keys(state.currentFriends).length)
+    // console.log('Object.keys', Object.keys(state.currentFriends))
+    // Object.keys(state.currentFriends).forEach()
+    Object.keys(state.currentFriends).forEach(WeChatId => {
+      // console.log('WeChatId', WeChatId)
+      state.currentFriends[WeChatId].ChatShowMemberNameEnable = bool
+    })
+  },
+  // 设置消息免打扰
+  // SET_MESSAGE_IMMUNITY(state,bool){
+  //   console.log('-----消息免打扰下的-----------state.currentFriends-----------')
+  //   console.log(state.currentFriends)
+  //   Object.keys(state.currentFriends).forEach(WeChatId => {
+  //     console.log('state.currentFriends[WeChatId].ChatMsgImmunityEnable', state.currentFriends[WeChatId].ChatMsgImmunityEnable)
+  //     state.currentFriends[WeChatId].ChatMsgImmunityEnable = bool
+  //   })
+  // },
+
 
   // ============== ConversationChats用到的变量 =======
   // 设置消息内容

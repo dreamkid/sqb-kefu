@@ -139,33 +139,41 @@
                   !['RoomSystem', 'SystemPrivateMsg', 'System'].includes(chat.ContentType)
                   ? '20px'
                   : 0
-            }" class="content-content" :class="[
-      {
-        'triangle-send':
-          chat.IsSend && notShow.indexOf(chat.ContentType) === -1 && chat.FfNick !== currentUser.NickName
-      },
-      {
-        'triangle-send-own':
-          chat.IsSend && notShow.indexOf(chat.ContentType) === -1 && chat.FfNick === currentUser.NickName
-      },
-      {
-        triangle: notShow.indexOf(chat.ContentType) === -1 && !chat.IsSend
-      },
-      {
-        'chat-room':
-          currentFriendId.indexOf('chatroom') > 0 && !chat.IsSend && notShow.indexOf(chat.ContentType) === -1
-      },
-      { 'system-info': notShow.indexOf(chat.ContentType) > -1 },
-      { 'not-style': chat.ContentType === 'Picture' },
-      {
-        'content-interval':
-          chat.ContentType === 'SystemPrivateMsg' && JSON.parse(chat.Content).PrivateMsgEnable === 'false'
-      }
-    ]">
-            <div v-if="currentFriendId.indexOf('chatroom') > 0 &&
-              !chat.IsSend &&
-              !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType)
-              " class="chat-nick">
+            }"
+            class="content-content"
+            :class="[
+              {
+                'triangle-send':
+                  chat.IsSend && notShow.indexOf(chat.ContentType) === -1 && chat.FfNick !== currentUser.NickName
+              },
+              {
+                'triangle-send-own':
+                  chat.IsSend && notShow.indexOf(chat.ContentType) === -1 && chat.FfNick === currentUser.NickName
+              },
+              {
+                triangle: notShow.indexOf(chat.ContentType) === -1 && !chat.IsSend
+              },
+              {
+                'chat-room':
+                  currentFriendId.indexOf('chatroom') > 0 && !chat.IsSend && notShow.indexOf(chat.ContentType) === -1
+              },
+              { 'system-info': notShow.indexOf(chat.ContentType) > -1 },
+              { 'not-style': chat.ContentType === 'Picture' },
+              {
+                'content-interval':
+                  chat.ContentType === 'SystemPrivateMsg' && JSON.parse(chat.Content).PrivateMsgEnable === 'false'
+              }
+            ]"
+          >
+            <div
+              v-if="
+                currentFriendId.indexOf('chatroom') > 0 &&
+                !chat.IsSend &&
+                !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType) &&
+                currentFriend.ChatShowMemberNameEnable
+              "
+              class="chat-nick"
+            >
               {{ chat.FriendNick }}
             </div>
 
@@ -556,8 +564,6 @@ import Bus from '@/utils/bus'
 import filters from '@/filters'
 const { timeFilter } = filters
 
-import nedb from '@/db/nedb'
-
 import RecordModal from './RecordModal.vue'
 
 export default {
@@ -640,6 +646,7 @@ export default {
     }
   },
   computed: {
+
     ...mapState('nedb', {
       friends: 'friends', // 通讯录列表
       chatRooms: 'chatRooms', // 当前的群聊列表
@@ -705,7 +712,6 @@ export default {
 
     chatsFilter() {
       let data = [...this.currentChats.map((item) => ({ ...item }))]
-      console.log('-----------------data',data)
       return data
     },
 
@@ -1190,10 +1196,11 @@ export default {
     },
     // base64解码 & 不同类型的消息解读
     decodeChat(chat) {
-      //console.log('decodeChat', chat)
+      console.log('decodeChat', chat)
       try {
         let content = chat.Content
         const regJson = new RegExp(/^{.+}$/)
+        const httpRole=/((https?:\/\/|www\.)[\w.]*[a-zA-Z])/gi
         let jContent = {}
         let thumb = ''
         let str = ''
@@ -1210,7 +1217,15 @@ export default {
         switch (chat.ContentType) {
           // 文本 1
           case 'Text':
-          case 1:
+            case 1:
+            // content=content.replace(/^\n+|\n+$/g, '').replace(httpRole,`<a href=$1>$1</a>`)
+            content=content.replace(/^\n+|\n+$/g, '').replace(httpRole, (match) => {
+              let matchHttp =match;
+              if (match.startsWith('www.')) {
+              matchHttp = 'http://' + match;
+              }
+                return `<a href="${matchHttp}">${match}</a>`;
+              });
             return phiz.qqFaceImgMap(content)
           // 图片 2
           case 'Picture':
@@ -2395,7 +2410,8 @@ export default {
         this.popoverVisible[key] = false
       })
     })
-  }
+  },
+
 }
 </script>
 

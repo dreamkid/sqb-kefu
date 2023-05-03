@@ -6,7 +6,7 @@
         <!-- 昵称 -->
         <span
           class="nick-name ellipsis"
-          v-text="currentFriend.Memo || currentFriend.ShowName || currentFriend.NickName || currentFriend.FriendNick"
+          v-text="currentFriend.Remark || currentFriend.Memo || currentFriend.ShowName || currentFriend.NickName || currentFriend.FriendNick"
         ></span>
         <div
           v-if="currentFriend.MemberList"
@@ -109,13 +109,13 @@ export default {
     AnswerWindow,
     ShowChats,
     Info,
-    Friends
+    Friends,
   },
   data() {
     return {
       tab: undefined,
       friendTab: undefined,
-      noticeModal: { visible: false }
+      noticeModal: { visible: false },
     }
   },
   computed: {

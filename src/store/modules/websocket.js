@@ -240,7 +240,6 @@ const actions = {
     if (typeof message.IntValue === 'number') {
       content.IntValue = message.IntValue
     }
-
     content.Content = message.Content
 
     const msg = {
@@ -248,6 +247,8 @@ const actions = {
       MsgType: 'ChatRoomActionTask',
       Content: content
     }
+    // 发送消息 
+    console.log(content,'走了ChatRoomActionTask');
     // 发送消息
     commit('SEND_SOCK', msg)
 
@@ -257,7 +258,12 @@ const actions = {
         doc[key] = content[key]
       }
     }
+    // console.log('doc:', doc)
     doc.TaskId = content.taskId
+    // 操作保存本地nedb chatRoomTask  业务逻辑 有用  db:  database;
+    console.log('-------------------------获取发送完之后的消息');
+    console.log(doc);
+    console.log(doc.Content);
     // 操作保存本地nedb chatRoomTask
     dispatch('nedb/AddChatRoomTask', doc, { root: true })
   },
@@ -436,6 +442,7 @@ const mutations = {
   SEND_SOCK(state, agentData) {
     sendSock(agentData)
   }
+
 }
 
 export default {

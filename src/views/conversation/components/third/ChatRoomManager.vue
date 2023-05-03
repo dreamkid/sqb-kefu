@@ -419,7 +419,6 @@ export default {
   watch: {
     currentFriend: {
       handler(currentFriend) {
-        // console.log('currentFriend', currentFriend)
         this.user = {
           ...currentFriend,
           NickName: currentFriend.NickName || '--',
@@ -439,6 +438,8 @@ export default {
     }
   },
   created() {
+      console.log('----------------user------------');
+      console.log(this.user);
     Bus.$on('memberDetailChange', (friend) => {
       this.memberDetail = {
         ...this.memberDetail,
@@ -551,6 +552,15 @@ export default {
         Action: type, // 指令
         Content: this.user[field]
       }
+    
+      console.log('----------updateInfo的content----------');
+      console.log(content);
+      if (type === 32) {
+        this.$store.commit('conversation/SET_CHAT_SHOW_MEMBER_NAME_ENABLE', content.Content)
+      }
+      if (type == 33) {
+        this.$store.commit('conversation/SET_GROUP_CHAT_INFO', content.Content);
+      }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
     },
     roomModalAction(type) {
@@ -564,13 +574,14 @@ export default {
       this.roomActionModal.visible = false
     },
     roomModalConfirm() {
+      this.roomActionModal.visible = false
       const content = {
         WeChatId: this.currentFriend.WeChatId, // 商家所属微信号
         ChatRoomId: this.currentFriend.UserName, // 群聊id
         Action: this.roomActionModal.type, // 指令
         Content:
           this.roomActionModal.type === 2
-            ? this.friendsSelected.map((item) => item.FriendId).join(',')
+            ? this.friendsSelected.map((item) => item.friendId).join(',')
             : this.roomMembersSelected.map((item) => item.UserName).join(',')
       }
       this.$store.dispatch('websocket/ChatRoomActionTask', content)
