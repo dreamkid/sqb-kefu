@@ -130,9 +130,6 @@
       v-if="(currentInfoTab === 1 && members.length) || (currentInfoTab === 2 && shieldData.length)"></el-divider>
     <div class="room-action">
       <div class="room-til">群聊名称</div>
-      <!-- <div>{{user}}</div>
-      <div>--------</div>
-      <div>{{currentFriend}}</div> -->
       <div class="room-des" style="margin-bottom: 10px">
         <el-input v-if="isOwner" v-model="user.NickName" @blur="updateInfo(0, 'NickName')"></el-input>
         <i v-if="isOwner" class="el-icon-edit-outline"></i>
