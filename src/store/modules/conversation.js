@@ -929,9 +929,13 @@ const mutations = {
   // ============== ConversationChats用到的变量 =======
   // 设置消息内容
   SET_CONTENT: (state, content) => {
+    console.log('---------------------content-------------------');
+    console.log(content);
     state.content = content
   },
   SET_REMARK: (state, remark) => {
+    console.log('---------------------remark-------------------');
+    console.log(remark);
     state.remark = remark
   },
   SET_QUOTE_MSG: (state, qm) => {

@@ -8,7 +8,6 @@
       <el-input v-model="searchOptions.val" prefix-icon="el-icon-search" placeholder="搜索群成员" clearable
         @input="search"></el-input>
     </div>
-
     <div class="room-members" v-if="currentInfoTab === 1">
       <div class="room-member" v-for="(item, i) in members" :key="i">
         <el-popover v-model="popoverVisible[item.UserName]" trigger="manual" placement="left" width="305">

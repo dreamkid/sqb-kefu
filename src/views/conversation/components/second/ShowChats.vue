@@ -1291,7 +1291,7 @@ export default {
     },
     // base64解码 & 不同类型的消息解读
     decodeChat(chat) {
-      console.log('decodeChat', chat)
+      // console.log('decodeChat', chat)
       try {
         let content = chat.Content
         const regJson = new RegExp(/^{.+}$/)
