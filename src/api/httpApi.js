@@ -31,13 +31,19 @@ export function autoFriendAddTask(cid, accountid, execute_time, between_time, co
 }
 
 /**
- * 获取微信列表
+ * 获取微信列表（弃用）
  * @param {Number} unionId 用户的unionId
  */
 export function GetWeChatsReq(unionId) {
   return fetch.post('/pc/GetWeChatsReq', { id: unionId })
 }
-
+/**
+ * 获取微信列表（新）
+ * @param {Number} unionId 用户的unionId
+ */
+ export function getWeChatList(params) {
+  return fetch.get('/optimuscore/wechat/getWeChatList',{method:'getWeChatList',timestamp:'',sign:'sign'})
+}
 /**
  * 获取公共标签
  * @param {Number} uionId 用户id

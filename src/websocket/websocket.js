@@ -7,7 +7,7 @@ let WebSocketObj = null // 实例websocket
  * 创建websocket
  * @param {String} url websocket地址
  */
-function createWebSocket(url) {
+ function createWebSocket(url) {
   if (!url) {
     url = 'ws://'
   }
@@ -35,11 +35,13 @@ function createWebSocket(url) {
     store.commit('SET_WEB_SOCKET_STATE', 1)
   }
 
-  WebSocketObj.onmessage = (event) => {
+  WebSocketObj.onmessage =(event) => {
     // 拿到任何消息都说明当前连接是正常的
     // linkTimes = 1
     // heartCheck.start()
     try {
+      console.log('关联');
+      console.log(event);
       msgHandler(event)
     } catch (error) {
       console.log('收到无法解析的数据', event, error)
@@ -57,7 +59,7 @@ function sendSock(agentData) {
   // 若是ws开启状态
   if (WebSocketObj && WebSocketObj.readyState === WebSocketObj.OPEN) {
     // 发送指令
-    WebSocketObj.send(JSON.stringify(agentData))
+     WebSocketObj.send(JSON.stringify(agentData))
   } else {
     console.log('websocket未创建！', WebSocketObj)
   }

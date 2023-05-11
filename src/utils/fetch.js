@@ -114,8 +114,11 @@ httpInstance.interceptors.request.use(
     const token = localStorage.getItem('CURRENT_USER') && JSON.parse(localStorage.getItem('CURRENT_USER')).Token
     // token && (config.headers.Authorization = token)
     // 如果后端使用的是koa-jwt鉴权
+    console.log('token');
+    console.log(token);
     token && (config.headers.token = token)
     // 自定义token字段
+    console.log(store.state.httpToken);
     if (store.state.httpToken) {
       config.headers.token = store.state.httpToken
     }
@@ -176,7 +179,7 @@ function apiAxios(method, url, params) {
           resolve(res.data)
           // console.log(res.data)
           // 错误提示
-          if (res.data.code && res.data.code !== 0 && res.data.code !== 200) {
+          if (res.data.code && res.data.code !== 0 && res.data.code !== 200&& res.data.code !== '1000' ) {
             const tip = res.data.msg || res.data.message
             // MessageBox.alert(`请求${res.config.url},状态码:${res.data.code},错误信息:${tip}`, '错误信息', {
             MessageBox.alert(`错误信息:${tip}`, '错误信息', {

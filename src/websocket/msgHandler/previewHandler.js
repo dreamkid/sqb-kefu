@@ -3,11 +3,14 @@ import { Message } from 'element-ui'
 import Bus from '@/utils/bus'
 // 登录成功 ok
 function deviceAuthRspHandle(message) {
+  console.log('登录登录登录');
+  console.log(message);
   const currentUser = message.Extra
   // 设置用户信息
   store.commit('SET_CURRENT_USER', currentUser)
   // 设置token信息
   store.commit('SET_WEBSOCKET_TOKEN', message.AccessToken)
+  // store.commit('WEBSOCKET_TOKEN', message.AccessToken)
   localStorage.setItem('CURRENT_USER', JSON.stringify(currentUser))
   localStorage.setItem('WEBSOCKET_TOKEN', message.AccessToken)
 

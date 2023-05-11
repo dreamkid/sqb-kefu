@@ -13,7 +13,8 @@ const state = {
 
   // ============== first part 用到的变量 =======
   conversations: [], // 每个微信的会话
-  currentFriends: {}, // 会话页面每个微信选中的好友
+  currentFriends: {
+  }, // 会话页面每个微信选中的好友
   refreshButton: true, // 刷新按钮可用
   currentFriend: null, // 会话汇总模式下的好友
 
@@ -24,7 +25,7 @@ const state = {
 
   currentChatsStore: [],
   currentChatsCacheStore: [],
-
+  popoverVisible:{},
   content: '', // 当前要发送的内容， 默认为空
   remark: '', // 要@的群成员的id
   quoteMsg: '', // 引用消息的msgSvrId
@@ -519,7 +520,14 @@ const mutations = {
       state.currentFriends[content].Remark = data;
     })
   },
-
+  // 群聊名称
+  SET_GROUP_CHAT_NAME: (state, data) => {
+    console.log('-----设置群昵称--------------------');
+    Object.keys(state.currentFriends).forEach(content => {
+      state.currentFriends[content].NickName = data;
+      state.currentFriends[content].ShowName = data;
+    })
+  },
   SET_CURRENT_CHATS_CACHE_STORE: (state, data) => {
     state.currentChatsCacheStore = data
   },
@@ -717,7 +725,6 @@ const mutations = {
   SET_CURRENT_WECHAT: (state, wechat) => {
     state.currentWechat = wechat
   },
-
   // 设置每个微信的会话
   SET_CONVERSATIONS: (state, convsData) => {
     //console.log(convsData)
