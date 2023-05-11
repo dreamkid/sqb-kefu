@@ -35,14 +35,14 @@ let WebSocketObj = null // 实例websocket
     store.commit('SET_WEB_SOCKET_STATE', 1)
   }
 
-  WebSocketObj.onmessage =async (event) => {
+  WebSocketObj.onmessage =(event) => {
     // 拿到任何消息都说明当前连接是正常的
     // linkTimes = 1
     // heartCheck.start()
     try {
       console.log('关联');
       console.log(event);
-      await msgHandler(event)
+      msgHandler(event)
     } catch (error) {
       console.log('收到无法解析的数据', event, error)
     }
@@ -53,11 +53,13 @@ let WebSocketObj = null // 实例websocket
  * 发送指令
  * @param {*} agentData
  */
-async function sendSock(agentData) {
+function sendSock(agentData) {
+  console.log('-----------agentData------------');
+  console.log(agentData);
   // 若是ws开启状态
   if (WebSocketObj && WebSocketObj.readyState === WebSocketObj.OPEN) {
     // 发送指令
-    await WebSocketObj.send(JSON.stringify(agentData))
+     WebSocketObj.send(JSON.stringify(agentData))
   } else {
     console.log('websocket未创建！', WebSocketObj)
   }

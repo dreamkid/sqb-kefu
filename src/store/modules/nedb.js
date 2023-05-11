@@ -817,6 +817,8 @@ const actions = {
     doc.userId = rootGetters.userId
     doc.result = 0 // 0表示初始状态 1表示成功 2表示失败
     nedb.chatRoomTask.insert(doc, (err, newDoc) => {
+      console.log('-------------------群管理任务保存到数据库  doc---------------');
+      console.log(doc);
       if (err) return
     })
   },

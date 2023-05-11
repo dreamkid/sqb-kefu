@@ -1,12 +1,8 @@
 <template>
   <div id="show-chat" class="show-chats scroll" @wheel="wheel">
     <div v-if="currentChats.length >= recordTotal && recordTotal > 10" class="no-more">没有更多了</div>
-    <div
-      class="more-message"
-      :class="{ 'more-message-text': !recordLoading }"
-      v-if="currentChats.length < recordTotal && recordTotal > 10 && currentChats.length"
-      @click="newPage"
-    >
+    <div class="more-message" :class="{ 'more-message-text': !recordLoading }"
+      v-if="currentChats.length < recordTotal && recordTotal > 10 && currentChats.length" @click="newPage">
       <i class="el-icon-loading" v-if="recordLoading"></i>
       <span v-else>查看更多消息</span>
     </div>
@@ -14,31 +10,17 @@
     <!-- 有消息 -->
     <div v-for="(chat, index) in chatsFilter" :key="index" class="chat-item">
       <!-- 时间 -->
-      <div
-        class="chat-time"
-        v-if="showTime(chat.CreateTime, chatsFilter[index - 1] && chatsFilter[index - 1].CreateTime)"
-        v-text="$options.filters.timeFilter(chat.CreateTime)"
-      ></div>
+      <div class="chat-time" v-if="showTime(chat.CreateTime, chatsFilter[index - 1] && chatsFilter[index - 1].CreateTime)"
+        v-text="$options.filters.timeFilter(chat.CreateTime)"></div>
 
       <!-- 内容 -->
-      <div
-        class="chat-content"
-        :class="{ 'chat-content-send': chat.IsSend ? true : false }"
-        :style="{
+      <div class="chat-content" :class="{ 'chat-content-send': chat.IsSend ? true : false }" :style="{
           'padding-top': !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType) ? '30px' : 0
-        }"
-      >
+        }">
         <!-- 头像 -->
         <el-popover v-model="popoverVisible[chat.MsgSvrId]" trigger="manual" placement="right" width="305">
-          <el-avatar
-            slot="reference"
-            v-if="notShow.indexOf(chat.ContentType) === -1"
-            shape="square"
-            :size="40"
-            :src="getAvatar(chat)"
-            title="头像"
-            @click.native.stop="showMemberDetail($event, chat)"
-          >
+          <el-avatar slot="reference" v-if="notShow.indexOf(chat.ContentType) === -1" shape="square" :size="40"
+            :src="getAvatar(chat)" title="头像" @click.native.stop="showMemberDetail($event, chat)">
             <i class="fa fa-picture-o" aria-hidden="true" title="头像miss"></i>
           </el-avatar>
 
@@ -48,12 +30,8 @@
               <div style="width: 215px">
                 <div class="avatar-popover-top-head">
                   <div class="avatar-popover-top-head-left ellipsis">{{ memberDetail.FullName }}</div>
-                  <el-popover
-                    popper-class="more-popover"
-                    style="position: absolute; right: 0"
-                    placement="bottom-start"
-                    trigger="hover"
-                  >
+                  <el-popover popper-class="more-popover" style="position: absolute; right: 0" placement="bottom-start"
+                    trigger="hover">
                     <i slot="reference" class="el-icon-more" style="cursor: pointer"></i>
                     <div>
                       <el-menu style="border-right: none">
@@ -71,7 +49,8 @@
                     </div>
                   </el-popover>
                 </div>
-                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }} <img class="ml-10" style="width: 12px" src="@/assets/images/man.png" /></div>
+                <div class="avatar-popover-top-item ellipsis">群昵称： {{ memberDetail.FriendNick || '-' }} <img class="ml-10"
+                    style="width: 12px" src="@/assets/images/man.png" /></div>
                 <div class="avatar-popover-top-item ellipsis" :title="memberDetail.FriendId">
                   微信号：{{ memberDetail.FriendId }}
                 </div>
@@ -102,31 +81,23 @@
               <el-button @click="atSomebody(chat)">@Ta</el-button>
               <el-button>加入黑名单</el-button>
               <el-button>加入白名单</el-button>
-              <el-button
-                :style="{
+              <el-button :style="{
                   backgroundColor: memberDetail.FriendShieldGroupEnable ? '#0CC160' : '#FF5722',
                   borderColor: memberDetail.FriendShieldGroupEnable ? '#0CC160' : '#FF5722'
-                }"
-                @click="shieldAction(chat, memberDetail.FriendShieldGroupEnable, chat.FriendId)"
-              >
+                }" @click="shieldAction(chat, memberDetail.FriendShieldGroupEnable, chat.FriendId)">
                 {{ memberDetail.FriendShieldGroupEnable ? '解除屏蔽ta该群消息' : '屏蔽ta该群消息' }}
               </el-button>
-              <el-button
-                :style="{
-                  backgroundColor: memberDetail.FriendShieldAllGroupEnable ? '#0CC160' : '#FF5722',
-                  borderColor: memberDetail.FriendShieldAllGroupEnable ? '#0CC160' : '#FF5722'
-                }"
-                @click="shieldAction(chat, memberDetail.FriendShieldAllGroupEnable)"
-              >
+              <el-button :style="{
+                backgroundColor: memberDetail.FriendShieldAllGroupEnable ? '#0CC160' : '#FF5722',
+                borderColor: memberDetail.FriendShieldAllGroupEnable ? '#0CC160' : '#FF5722'
+              }" @click="shieldAction(chat, memberDetail.FriendShieldAllGroupEnable)">
                 {{ memberDetail.FriendShieldAllGroupEnable ? '解除屏蔽ta所有群消息' : '屏蔽ta所有群消息' }}
               </el-button>
             </div>
           </div>
         </el-popover>
-        <div
-          v-if="chat.IsSend && !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType)"
-          class="chat-nick-send ellipsis"
-        >
+        <div v-if="chat.IsSend && !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType)"
+          class="chat-nick-send ellipsis">
           {{ chat.SendBy === 1 ? '客服系统' : '其它' }} - {{ chat.FfNick }}
         </div>
         <!-- 群成员id -->
@@ -157,21 +128,15 @@
         </div> -->
 
         <!-- content -->
-        <div
-          class="content-container"
-          :class="{
-            'content-message-container': ['RoomSystem', 'SystemPrivateMsg', 'System'].includes(chat.ContentType),
-            'content-content-container': !['RoomSystem', 'SystemPrivateMsg', 'System'].includes(chat.ContentType)
-          }"
-          @mouseenter="contentMouseEnter($event, chat)"
-          @mouseleave="contentMouseLeave($event, chat)"
-        >
-          <div
-            :style="{
+        <div class="content-container" :class="{
+          'content-message-container': ['RoomSystem', 'SystemPrivateMsg', 'System'].includes(chat.ContentType),
+          'content-content-container': !['RoomSystem', 'SystemPrivateMsg', 'System'].includes(chat.ContentType)
+        }" @mouseenter="contentMouseEnter($event, chat)" @mouseleave="contentMouseLeave($event, chat)">
+          <div :style="{
               marginTop:
                 currentFriendId.indexOf('chatroom') > 0 &&
-                !chat.IsSend &&
-                !['RoomSystem', 'SystemPrivateMsg', 'System'].includes(chat.ContentType)
+                  !chat.IsSend &&
+                  !['RoomSystem', 'SystemPrivateMsg', 'System'].includes(chat.ContentType)
                   ? '20px'
                   : 0
             }"
@@ -204,7 +169,8 @@
               v-if="
                 currentFriendId.indexOf('chatroom') > 0 &&
                 !chat.IsSend &&
-                !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType)
+                !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType) &&
+                currentFriend.ChatShowMemberNameEnable
               "
               class="chat-nick"
             >
@@ -212,41 +178,37 @@
             </div>
 
             <!-- @contextmenu.prevent="rightEvent($event, chat)" -->
-            <div
-              class="chat-text"
-              :class="[
-                {
-                  'chat-picture': chat.ContentType === 'Picture' || chat.ContentType === 2
-                },
-                {
-                  'chat-voice': chat.ContentType === 'Voice' || chat.ContentType === 3
-                },
-                {
-                  'chat-video': chat.ContentType === 'Video' || chat.ContentType === 4
-                },
-                {
-                  'chat-link': chat.ContentType === 'Link' || chat.ContentType === 6
-                },
-                {
-                  'chat-file': chat.ContentType === 'File' || chat.ContentType === 8
-                },
-                {
-                  'chat-namecard':
-                    chat.ContentType === 'MpNameCard' || chat.ContentType === 'NameCard' || chat.ContentType === 9
-                },
-                {
-                  'chat-luckmoney': chat.ContentType === 'LuckyMoney' || chat.ContentType === 11
-                },
-                {
-                  'chat-moneytran': chat.ContentType === 'MoneyTrans' || chat.ContentType === 12
-                },
-                {
-                  'chat-app': chat.ContentType === 'WeApp' || chat.ContentType === 13
-                },
-                { 'chat-system': notShow.indexOf(chat.ContentType) > -1 }
-              ]"
-              @click="whatToDo(chat)"
-            >
+            <div class="chat-text" :class="[
+              {
+                'chat-picture': chat.ContentType === 'Picture' || chat.ContentType === 2
+              },
+              {
+                'chat-voice': chat.ContentType === 'Voice' || chat.ContentType === 3
+              },
+              {
+                'chat-video': chat.ContentType === 'Video' || chat.ContentType === 4
+              },
+              {
+                'chat-link': chat.ContentType === 'Link' || chat.ContentType === 6
+              },
+              {
+                'chat-file': chat.ContentType === 'File' || chat.ContentType === 8
+              },
+              {
+                'chat-namecard':
+                  chat.ContentType === 'MpNameCard' || chat.ContentType === 'NameCard' || chat.ContentType === 9
+              },
+              {
+                'chat-luckmoney': chat.ContentType === 'LuckyMoney' || chat.ContentType === 11
+              },
+              {
+                'chat-moneytran': chat.ContentType === 'MoneyTrans' || chat.ContentType === 12
+              },
+              {
+                'chat-app': chat.ContentType === 'WeApp' || chat.ContentType === 13
+              },
+              { 'chat-system': notShow.indexOf(chat.ContentType) > -1 }
+            ]" @click="whatToDo(chat)">
               <!-- <div
               class="chat-interval-see"
               v-if="chat.ContentType === 'SystemPrivateMsg' && JSON.parse(chat.Content).PrivateMsgEnable === 'false'"
@@ -258,47 +220,28 @@
                 <el-avatar shape="square" :size="40" :src="currentWechat.Avatar"></el-avatar>
               </div>
             </div> -->
-              <div
-                v-if="!['Voice', 'LuckyMoney', 'NameCard', 'MpNameCard', 'File'].includes(chat.ContentType)"
-                v-html="decodeChat(chat, index)"
-              ></div>
+              <div v-if="!['Voice', 'LuckyMoney', 'NameCard', 'MpNameCard', 'File'].includes(chat.ContentType)"
+                v-html="decodeChat(chat, index)"></div>
               <div v-if="chat.ContentType === 'Voice'">
                 <div class="chat-audio">
                   <audio :id="`audio${chat.CreateTime}`" :src="getVoiceUrl(chat)"></audio>
-                  <img
-                    v-if="chat.__audioState"
-                    class="chat-audio-icon"
-                    src="@/assets/images/voice_pause.png"
-                    alt=""
-                    @click="audioPause(chat)"
-                  />
-                  <img
-                    v-else
-                    class="chat-audio-icon"
-                    src="@/assets/images/voice_play.png"
-                    alt=""
-                    @click="audioPlay(chat)"
-                  />
+                  <img v-if="chat.__audioState" class="chat-audio-icon" src="@/assets/images/voice_pause.png" alt=""
+                    @click="audioPause(chat)" />
+                  <img v-else class="chat-audio-icon" src="@/assets/images/voice_play.png" alt=""
+                    @click="audioPlay(chat)" />
                   <div class="chat-audio-progress">
-                    <div
-                      class="chat-audio-progress-item"
-                      v-for="(item, i) in audioProgress"
-                      :key="i"
-                      @click="audioProgressChange(chat, item, i)"
-                    >
-                      <div
-                        class="chat-audio-progress-item-unit"
-                        :style="{
+                    <div class="chat-audio-progress-item" v-for="(item, i) in audioProgress" :key="i"
+                      @click="audioProgressChange(chat, item, i)">
+                      <div class="chat-audio-progress-item-unit" :style="{
                           height: item.size * 6 + 'px',
                           'background-color': chat.IsSend
                             ? chat.__currentProgress >= i + 1
                               ? '#0CC160'
                               : '#fff'
                             : chat.__currentProgress >= i + 1
-                            ? '#0CC160'
-                            : '#D8D8D8'
-                        }"
-                      ></div>
+                              ? '#0CC160'
+                              : '#D8D8D8'
+                        }"></div>
                     </div>
                   </div>
                   <span class="chat-audio-time">
@@ -383,43 +326,28 @@
               </div>
             </div>
           </div>
-          <div
-            v-if="
-              !['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType) &&
-              currentContentItem.MsgId === chat.MsgId
-            "
-          >
-            <el-button
-              style="margin-left: 10px; color: #909399; padding: 5px"
-              v-if="
-                chat.IsRevoke !== 1 &&
-                chat.IsSend &&
-                chat.MsgSvrId &&
-                revokeMap.indexOf(chat.ContentType) >= 0 &&
-                dayjs().diff(dayjs(Number(chat.CreateTime)), 'second') < 118
-              "
-              size="mini"
-              @click="revokeMessageTask(chat)"
-            >
+          <div v-if="!['RoomSystem', 'System', 'SystemPrivateMsg'].includes(chat.ContentType) &&
+            currentContentItem.MsgId === chat.MsgId
+            ">
+            <el-button style="margin-left: 10px; color: #909399; padding: 5px" v-if="chat.IsRevoke !== 1 &&
+              chat.IsSend &&
+              chat.MsgSvrId &&
+              revokeMap.indexOf(chat.ContentType) >= 0 &&
+              dayjs().diff(dayjs(Number(chat.CreateTime)), 'second') < 118
+              " size="mini" @click="revokeMessageTask(chat)">
               撤回
             </el-button>
           </div>
         </div>
 
         <!-- 功能按钮 -->
-        <div
-          class="send-state"
-          :class="{
+        <div class="send-state" :class="{
             'chat-room':
               currentFriendId.indexOf('chatroom') > 0 && !chat.IsSend && notShow.indexOf(chat.ContentType) === -1
-          }"
-        >
+          }">
           <!-- 发送中 -->
-          <el-button
-            v-if="chat.IsSend && notShow.indexOf(chat.ContentType) === -1 && chat.LocalSend"
-            type="text"
-            class="el-icon-loading"
-          ></el-button>
+          <el-button v-if="chat.IsSend && notShow.indexOf(chat.ContentType) === -1 && chat.LocalSend" type="text"
+            class="el-icon-loading"></el-button>
 
           <!-- <el-button
             v-if="chat.ContentType === 'LuckyMoney'"
@@ -433,10 +361,7 @@
             查看
           </el-button> -->
           <div v-if="chat.IsRevoke === 1" class="message-action-revoke">消息已撤回</div>
-          <div
-            v-if="chat.PrivateMsgId && !['SystemPrivateMsg'].includes(chat.ContentType)"
-            class="message-tag-interval"
-          >
+          <div v-if="chat.PrivateMsgId && !['SystemPrivateMsg'].includes(chat.ContentType)" class="message-tag-interval">
             内部消息
           </div>
 
@@ -551,12 +476,8 @@
     <!-- 大图 -->
     <!-- <div id="bigImage" class="demo-image__preview big-img-box"> -->
     <div class="demo-image__preview big-img-box">
-      <el-image
-        id="bigImageBox"
-        style="width: 100px; height: 100px"
-        :src="bigImageUrl"
-        :preview-src-list="[bigImageUrl]"
-      ></el-image>
+      <el-image id="bigImageBox" style="width: 100px; height: 100px" :src="bigImageUrl"
+        :preview-src-list="[bigImageUrl]"></el-image>
     </div>
     <!--新消息-->
     <div class="new-message" v-if="!isScrollBottom && unread && isShowNewMessage && currentChats.length > 10">
@@ -568,15 +489,8 @@
       <i class="el-icon-close" @click="isShowNewMessage = false"></i>
     </div>
 
-    <el-dialog
-      width="580px"
-      class="interval-modal"
-      append-to-body
-      :visible="intervalModal.visible"
-      :before-close="intervalModalClose"
-      title="内部聊天记录"
-      destroy-on-close
-    >
+    <el-dialog width="580px" class="interval-modal" append-to-body :visible="intervalModal.visible"
+      :before-close="intervalModalClose" title="内部聊天记录" destroy-on-close>
       <div class="interval-modal-body">
         <div class="interval-modal-body-item" v-for="(item, i) in intervalModal.records" :key="i">
           <el-avatar shape="square" :size="40" :src="getAvatar(item)"></el-avatar>
@@ -599,15 +513,8 @@
       </div>
     </el-dialog>
 
-    <el-dialog
-      width="400px"
-      class="add-friend-modal"
-      append-to-body
-      :visible="addFriendModal.visible"
-      :before-close="addFriendModalClose"
-      :show-close="false"
-      destroy-on-close
-    >
+    <el-dialog width="400px" class="add-friend-modal" append-to-body :visible="addFriendModal.visible"
+      :before-close="addFriendModalClose" :show-close="false" destroy-on-close>
       <div class="add-friend-til">申请添加朋友</div>
       <div>
         <div class="add-friend-item-til">发送添加朋友申请</div>
@@ -657,8 +564,6 @@ import Bus from '@/utils/bus'
 import filters from '@/filters'
 const { timeFilter } = filters
 
-import nedb from '@/db/nedb'
-
 import RecordModal from './RecordModal.vue'
 
 export default {
@@ -691,7 +596,6 @@ export default {
       lastSt: -1,
       lastFetchTime: 0,
       groupModal: { visible: false, groups: [] },
-      popoverVisible: {},
 
       isScrollBottom: false,
 
@@ -742,6 +646,7 @@ export default {
     }
   },
   computed: {
+
     ...mapState('nedb', {
       friends: 'friends', // 通讯录列表
       chatRooms: 'chatRooms', // 当前的群聊列表
@@ -754,7 +659,8 @@ export default {
       conversations: 'conversations',
       conversationLockMap: 'conversationLockMap',
       currentChatsStore: 'currentChatsStore',
-      currentChatsCacheStore: 'currentChatsCacheStore'
+      currentChatsCacheStore: 'currentChatsCacheStore',
+      popoverVisible:'popoverVisible'
     }),
     ...mapState(['currentUser']),
     ...mapGetters({
@@ -806,7 +712,6 @@ export default {
 
     chatsFilter() {
       let data = [...this.currentChats.map((item) => ({ ...item }))]
-      console.log(data)
       return data
     },
 
@@ -1222,7 +1127,6 @@ export default {
     },
     // 获取群成员详情
     showMemberDetail(e, chat) {
-      //console.log(chat)
       //名片
       if (!chat.IsSend && chat.FriendId && chat.FriendId.endsWith('@chatroom')) {
         this.popoverVisible[chat.MsgSvrId] = true
@@ -1334,9 +1238,8 @@ export default {
 
             if (jContent.Thumb && jContent.Thumb.startsWith('http')) {
               if (chat.FriendId && chat.FriendId.endsWith('@im.chatroom')) {
-                return `<img class="chat-img" src="${jContent.Thumb}" title="点击看大图" alt="图片"/>${
-                  is ? '' : '<i class="el-icon-download chat-img-icon"></i>'
-                }`
+                return `<img class="chat-img" src="${jContent.Thumb}" title="点击看大图" alt="图片"/>${is ? '' : '<i class="el-icon-download chat-img-icon"></i>'
+                  }`
               } else {
                 return `<img class="chat-img" src="${jContent.Thumb}" title="点击看大图" alt="图片"/>`
               }
@@ -1382,12 +1285,10 @@ export default {
               // return `<audio src="${thumb}" alt="语音" controls></audio>`
 
               return chat.IsSend
-                ? `${
-                    chat.duration || 0
-                  }" <img style="width:16px;cursor:pointer"  onclick="handleAudio()" src="https://kuaizhan.ecostudio.cn/play.png"/>`
-                : `<img style="width:16px;cursor:pointer" onclick="handleAudio()" src="https://kuaizhan.ecostudio.cn/play_.png"/> ${
-                    chat.duration || 0
-                  }"`
+                ? `${chat.duration || 0
+                }" <img style="width:16px;cursor:pointer"  onclick="handleAudio()" src="https://kuaizhan.ecostudio.cn/play.png"/>`
+                : `<img style="width:16px;cursor:pointer" onclick="handleAudio()" src="https://kuaizhan.ecostudio.cn/play_.png"/> ${chat.duration || 0
+                }"`
             } else {
               // return ` <p>[语音]文件地址错误，点击重新获取</p>`
               return chat
@@ -1396,9 +1297,8 @@ export default {
           case 'Video':
           case 4:
             if (chat.Url || this.bigImageMap[chat.MsgId]) {
-              str = `<video class="video-box" src="${
-                chat.Url || this.bigImageMap[chat.MsgId]
-              }" type="video/mp4" alt="视频" controls></video>`
+              str = `<video class="video-box" src="${chat.Url || this.bigImageMap[chat.MsgId]
+                }" type="video/mp4" alt="视频" controls></video>`
             } else if (jContent.Thumb && jContent.Thumb.startsWith('http')) {
               str = `<video class="video-box" src="${jContent.Thumb}" type="video/mp4" alt="视频" controls></video>`
             } else if (jContent.Thumb || jContent.Thumb === '') {
@@ -1734,9 +1634,8 @@ export default {
           case 33:
             let message = JSON.parse(content)
             //console.log(message.Time ? message.Time : dayjs().valueOf())
-            return `<div class="chat-internal">${message.Time ? timeFilter(parseInt(message.Time)) : '-'} ${
-              message.Title
-            }</div>`
+            return `<div class="chat-internal">${message.Time ? timeFilter(parseInt(message.Time)) : '-'} ${message.Title
+              }</div>`
           // 不支持的消息
           default:
             return `不支持的消息类型 ${chat.ContentType}`
@@ -1861,7 +1760,7 @@ export default {
               document.body.appendChild(a)
               a.click()
             })
-            .catch(() => {})
+            .catch(() => { })
         } else if (ContentType === 'Video') {
           return
         } else if (ContentType === 'Voice') {
@@ -2453,7 +2352,7 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() { },
   created() {
     Bus.$on('shieldCancel', () => {
       const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
@@ -2512,18 +2411,21 @@ export default {
         this.popoverVisible[key] = false
       })
     })
-  }
+  },
+
 }
 </script>
 
 <style lang="scss" scoped>
-.avatar-popover-top-item{
+.avatar-popover-top-item {
   display: flex;
   align-items: center;
-  .ml-10{
+
+  .ml-10 {
     margin-left: 10px;
   }
 }
+
 .big-img-box {
   position: absolute;
   top: 0;
@@ -2537,22 +2439,27 @@ export default {
   overflow-y: scroll;
   background-color: #f9f9f9;
   opacity: 1;
+
   .no-more {
     text-align: center;
     margin: 5px 0;
     font-size: 12px;
   }
+
   &:hover {
     &::-webkit-scrollbar-thumb {
       background-color: #dedede;
+
       &:hover {
         background-color: rgba(0, 0, 0, 0.2);
       }
     }
   }
+
   &::-webkit-scrollbar-thumb {
     background-color: transparent;
   }
+
   .more-message {
     width: 140px;
     height: 30px;
@@ -2561,6 +2468,7 @@ export default {
     margin-left: 50%;
     transform: translateX(-50%);
   }
+
   .more-message-text {
     background-color: #eeeeee;
     color: #666666;
@@ -2601,6 +2509,7 @@ export default {
     flex-direction: column;
     margin-bottom: 5px;
     padding: 0 5px;
+
     .chat-time {
       font-size: 12px;
       padding: 5px 10px;
@@ -2615,21 +2524,26 @@ export default {
       position: relative;
       font-size: 12px;
       color: $font-color-base;
+
       .content-container {
         display: flex;
       }
+
       .content-message-container {
         width: 100%;
       }
+
       .content-content-container {
         display: flex;
         flex-direction: row-reverse;
         align-items: center;
         max-width: 60%;
       }
+
       .el-avatar {
         border-radius: 0;
       }
+
       .member-info {
         max-width: 60%;
         position: absolute;
@@ -2637,6 +2551,7 @@ export default {
         top: 0;
         left: 48px;
       }
+
       .content-content {
         min-height: 40px;
         line-height: 25px;
@@ -2654,6 +2569,7 @@ export default {
           width: 100px;
           height: auto;
         }
+
         ::v-deep .chat-img-icon {
           font-size: 40px;
           position: absolute;
@@ -2662,24 +2578,29 @@ export default {
           transform: translateX(-50%) translateY(-50%);
           cursor: pointer;
         }
+
         .chat-text {
           font-size: 14px;
         }
+
         .chat-picture {
           width: 100px;
           display: flex;
           align-items: center;
         }
+
         .chat-voice {
           //width: 300px;
           max-width: 100%;
           display: flex;
           align-items: center;
         }
+
         ::v-deep .chat-video {
           display: flex;
           align-items: center;
           position: relative;
+
           .play-video {
             color: #98e165;
             position: absolute;
@@ -2689,18 +2610,22 @@ export default {
             transform: translate(-50%, -50%);
             cursor: pointer;
           }
+
           .video-box {
             width: 200px;
             height: 120px;
             object-fit: cover;
           }
+
           .video-box-no {
             width: 100px;
             height: auto;
           }
         }
+
         ::v-deep .chat-system {
           color: gray;
+
           a {
             color: #41c0fc;
           }
@@ -2711,14 +2636,17 @@ export default {
           width: 300px;
           max-width: 100%;
           cursor: pointer;
+
           .link-title {
             font-size: 14px;
             font-weight: 600;
           }
+
           .link-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             .link-des {
               flex: auto;
               color: #aaaaaa;
@@ -2732,6 +2660,7 @@ export default {
               -webkit-box-orient: vertical;
               -webkit-line-clamp: 3;
             }
+
             .link-img {
               max-width: 50px;
               max-height: 50px;
@@ -2740,6 +2669,7 @@ export default {
               border-radius: 5px;
             }
           }
+
           .link-type {
             color: #aaaaaa;
             margin-top: 5px;
@@ -2747,19 +2677,23 @@ export default {
             border-top: solid #e8eaec 1px;
           }
         }
+
         ::v-deep .chat-file {
           flex-direction: column;
           width: 300px;
           max-width: 100%;
           cursor: pointer;
+
           .file-title {
             font-size: 14px;
             font-weight: 600;
           }
+
           .file-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             .file-des {
               flex: auto;
               color: #aaaaaa;
@@ -2773,11 +2707,13 @@ export default {
               -webkit-box-orient: vertical;
               -webkit-line-clamp: 3;
             }
+
             .file-icon {
               font-size: 30px;
               margin-right: 20px;
             }
           }
+
           .file-type {
             color: #aaaaaa;
             margin-top: 5px;
@@ -2785,18 +2721,22 @@ export default {
             border-top: solid #e8eaec 1px;
           }
         }
+
         ::v-deep .chat-app {
           width: 300px;
           max-width: 100%;
           cursor: pointer;
           display: flex;
           flex-direction: column;
+
           .app-des {
             display: flex;
+
             .app-icon {
               width: 20px;
               height: 20px;
             }
+
             .app-source {
               width: 100%;
               font-size: 12px;
@@ -2804,6 +2744,7 @@ export default {
               color: gray;
             }
           }
+
           .app-title {
             width: 100%;
             height: 30px;
@@ -2811,10 +2752,12 @@ export default {
             font-weight: 600;
             line-height: 30px;
           }
+
           .app-img {
             align-self: center;
             max-width: 200px;
           }
+
           .app-typestr {
             height: 25px;
             margin-top: 5px;
@@ -2824,41 +2767,49 @@ export default {
             border-top: solid #aaaaaa 1px;
           }
         }
+
         ::v-deep .chat-namecard {
           width: 300px;
           max-width: 100%;
           cursor: pointer;
+
           .namecard-info {
             display: flex;
             align-items: center;
+
             .namecard-img {
               height: 50px;
               width: 50px;
               min-width: 50px;
               border-radius: 5px;
             }
+
             .namecard-nickname {
               width: 250px;
               font-size: 14px;
               margin-left: 5px;
             }
           }
+
           .namecard-tip {
             color: gray;
             margin-top: 5px;
             border-top: #aaaaaa solid 1px;
           }
         }
+
         ::v-deep .chat-luckmoney {
           width: 300px;
           max-width: 100%;
           background: #fa9d3b;
           cursor: pointer;
+
           .luck-info {
             display: flex;
             align-items: center;
             height: 60px;
             width: 100%;
+
             .luck-img {
               max-width: 50px;
             }
@@ -2887,29 +2838,35 @@ export default {
               color: white;
             }
           }
+
           .luckmoney-tip {
             color: gray;
             background: white;
             margin-top: 5px;
           }
+
           &:hover {
             background: rgba($color: #fa9d3b, $alpha: 0.9);
           }
         }
+
         ::v-deep .chat-moneytran {
           width: 300px;
           max-width: 100%;
           background: #fa9d3b;
           cursor: pointer;
+
           .moneytran-info {
             display: flex;
             align-items: center;
             height: 60px;
             width: 100%;
+
             .moneytran-img {
               max-width: 30px;
               margin-left: 10px;
             }
+
             .moneytran-feed,
             .moneytran-flag {
               font-size: 14px;
@@ -2917,15 +2874,18 @@ export default {
               color: white;
             }
           }
+
           .moneytran-tip {
             color: gray;
             background: white;
             margin-top: 5px;
           }
+
           &:hover {
             background: rgba($color: #fa9d3b, $alpha: 0.9);
           }
         }
+
         :deep(.chat-internal) {
           font-size: 12px;
           color: #999999;
@@ -2937,25 +2897,31 @@ export default {
         .chat-audio {
           display: flex;
           align-items: center;
+
           .chat-audio-icon {
             width: 24px;
             cursor: pointer;
           }
+
           .chat-audio-time {
             font-size: 12px;
             color: #333333;
             margin-left: 6px;
           }
+
           .chat-audio-time-active {
             color: #0cc160;
           }
+
           .chat-audio-progress {
             display: flex;
             align-items: center;
             position: relative;
             margin: 0 5px;
+
             .chat-audio-progress-item {
               cursor: pointer;
+
               .chat-audio-progress-item-unit {
                 width: 2px;
                 background-color: #fff;
@@ -2964,10 +2930,12 @@ export default {
             }
           }
         }
+
         .chat-red-packet {
           background-color: #fff;
           margin: -8px -12px;
           border-radius: 5px;
+
           .chat-red-packet-body {
             display: flex;
             align-items: center;
@@ -2977,61 +2945,73 @@ export default {
             border-top-right-radius: 5px;
             color: rgba(256, 256, 256, 0.9);
             padding-left: 5px;
+
             img {
               width: 48px;
               margin-right: 5px;
             }
           }
+
           .chat-red-packet-foot {
             color: #999999;
             font-size: 12px;
             padding: 5px 15px;
           }
         }
+
         .chat-mp-name-card {
           margin: -8px -12px;
+
           .chat-mp-name-card-body {
             display: flex;
             align-items: center;
             height: 60px;
             color: #000;
             padding-left: 5px;
+
             img {
               width: 48px;
               margin-right: 5px;
             }
           }
+
           .chat-mp-name-card-foot {
             color: #999999;
             font-size: 12px;
             padding: 5px 5px;
             border-top: 1px #efefef solid;
             margin: 0 10px;
+
             .chat-mp-name-card-foot-des {
               margin-left: 5px;
               color: #333;
             }
           }
         }
+
         .chat-name-card {
           margin: -8px -12px;
+
           .chat-name-card-body {
             display: flex;
             align-items: center;
             height: 60px;
             color: #000;
             padding-left: 5px;
+
             img {
               width: 48px;
               margin-right: 5px;
             }
           }
+
           .chat-name-card-foot {
             color: #999999;
             font-size: 12px;
             padding: 5px 5px;
             border-top: 1px #efefef solid;
             margin: 0 10px;
+
             .chat-name-card-foot-des {
               margin-left: 5px;
               color: #333;
@@ -3043,20 +3023,25 @@ export default {
           display: flex;
           align-items: center;
           justify-content: space-between;
+
           .chat-file-item-left {
             .chat-file-item-left-top {
               font-size: 14px;
               margin-bottom: 10px;
             }
+
             .chat-file-item-left-bottom {
               color: #999999;
             }
           }
+
           .chat-file-item-right {
             flex-shrink: 0;
+
             .el-icon-document {
               font-size: 46px;
             }
+
             img {
               width: 46px;
               height: 46px;
@@ -3064,11 +3049,13 @@ export default {
           }
         }
       }
+
       .content-interval {
         width: 100%;
         max-width: 100% !important;
         justify-content: center;
         padding: 0;
+
         .chat-interval-container {
           display: flex;
           flex-direction: column;
@@ -3084,6 +3071,7 @@ export default {
             margin-bottom: 15px;
             background-color: #f1f1f1;
             padding: 25px 0;
+
             .el-button {
               height: 30px;
               line-height: 30px;
@@ -3091,6 +3079,7 @@ export default {
               font-size: 12px;
               color: #333333;
             }
+
             .chat-interval-see-message {
               position: absolute;
               right: 10px;
@@ -3098,6 +3087,7 @@ export default {
               align-items: center;
               user-select: none;
               filter: blur(4px);
+
               .chat-interval-see-message-info {
                 background-color: #96ea69;
                 color: #000000;
@@ -3109,13 +3099,16 @@ export default {
           }
         }
       }
+
       .not-style {
         background-color: transparent;
         padding: 0;
         border: none;
+
         &::before {
           display: none;
         }
+
         &::after {
           display: none;
         }
@@ -3132,6 +3125,7 @@ export default {
       .chat-room {
         margin-top: 20px;
       }
+
       .triangle {
         &::before {
           content: '';
@@ -3141,6 +3135,7 @@ export default {
           top: 10px;
           left: -13px;
         }
+
         &::after {
           content: '';
           border: 6px solid transparent;
@@ -3149,8 +3144,10 @@ export default {
           top: 10px;
           left: -12px;
         }
+
         &:hover {
           background-color: #f6f6f6;
+
           &::after {
             content: '';
             border: 6px solid transparent;
@@ -3161,9 +3158,11 @@ export default {
           }
         }
       }
+
       .triangle-send-own {
         margin-right: 7px;
         background: #9eea6a;
+
         &::before {
           content: '';
           border: 6px solid transparent;
@@ -3172,6 +3171,7 @@ export default {
           top: 10px;
           right: -13px;
         }
+
         &::after {
           content: '';
           border: 6px solid transparent;
@@ -3183,11 +3183,13 @@ export default {
 
         &:hover {
           background-color: #98e165;
+
           &::after {
             border-left: 6px solid #98e165;
           }
         }
       }
+
       .triangle-send {
         margin-right: 7px;
         background: #d9eaff;
@@ -3200,6 +3202,7 @@ export default {
           top: 10px;
           right: -13px;
         }
+
         &::after {
           content: '';
           border: 6px solid transparent;
@@ -3208,25 +3211,30 @@ export default {
           top: 10px;
           right: -12px;
         }
+
         &:hover {
           background-color: #bad8ff;
+
           &::after {
             border-left: 6px solid #bad8ff;
           }
         }
       }
+
       .system-info {
         border: none;
         max-width: 80%;
         margin: 0 auto;
         background: inherit;
       }
+
       .chat-nick {
         width: 200px;
         position: absolute;
         top: -30px;
         left: 0px;
       }
+
       .chat-nick-send {
         width: 200px;
         text-align: right;
@@ -3239,6 +3247,7 @@ export default {
     .chat-content-send {
       flex-direction: row-reverse;
     }
+
     .message-action-revoke {
       background-color: #f2f2f2;
       border-radius: 4px;
@@ -3247,6 +3256,7 @@ export default {
       font-size: 12px;
       margin-left: 6px;
     }
+
     .message-tag-interval {
       background-color: #f2f2f2;
       border-radius: 4px;
@@ -3256,10 +3266,12 @@ export default {
       margin-left: 6px;
     }
   }
+
   .chat-item-interval {
     margin: 0;
     padding-bottom: 12px;
     background-color: #f0f0f0;
+
     .chat-content {
       padding-top: 25px;
     }
@@ -3267,6 +3279,7 @@ export default {
 
   ::v-deep .detail-dialog {
     overflow: hidden;
+
     .el-dialog {
       overflow: hidden;
       height: 500px;
@@ -3288,6 +3301,7 @@ export default {
           max-width: 100%;
           overflow: auto;
         }
+
         .detail-dialog-video {
           max-height: 100%;
           width: auto;
@@ -3295,17 +3309,22 @@ export default {
       }
     }
   }
+
   .member-detail {
     display: flex;
     flex-direction: column;
+
     ::v-deep .el-dialog {
       width: 500px;
+
       .el-dialog__body {
         padding: 20px;
       }
     }
+
     .member-detail-info {
       display: flex;
+
       .member-detail-text {
         display: flex;
         flex-direction: column;
@@ -3314,24 +3333,29 @@ export default {
         overflow: hidden;
       }
     }
+
     .member-detail-btns {
       display: flex;
       justify-content: space-around;
       margin-top: 20px;
     }
   }
+
   ::v-deep .transport-message {
     .el-dialog {
       .el-dialog__body {
         padding: 0;
+
         .el-tabs {
           padding: 0 10px;
+
           .friends-list {
             height: 400px;
             overflow: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
+
             .el-pagination {
               margin: 5px 0;
             }
@@ -3356,15 +3380,16 @@ export default {
     border-radius: 4px;
     color: #0cc160;
     cursor: pointer;
+
     img {
       width: 16px;
       margin-right: 5px;
     }
   }
 }
+
 .hide-scroll {
   &::-webkit-scrollbar-thumb {
     background-color: transparent !important;
   }
-}
-</style>
+}</style>
