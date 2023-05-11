@@ -1296,7 +1296,8 @@ export default {
       try {
         let content = chat.Content
         const regJson = new RegExp(/^{.+}$/)
-        const httpRole=/((https?:\/\/|www\.)[\w.]*[a-zA-Z])/gi
+        const httpRole= /(\b(https?|http?|ftp|ftps):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
+        // const httpRole=/((https?:\/\/|www\.)[\w.]*[a-zA-Z])/gi
         let jContent = {}
         let thumb = ''
         let str = ''

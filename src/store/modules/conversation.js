@@ -516,7 +516,14 @@ const mutations = {
       state.currentFriends[content].Remark = data;
     })
   },
-
+  // 群聊名称
+  SET_GROUP_CHAT_NAME: (state, data) => {
+    console.log('-----设置群昵称--------------------');
+    Object.keys(state.currentFriends).forEach(content => {
+      state.currentFriends[content].NickName = data;
+      state.currentFriends[content].ShowName = data;
+    })
+  },
   SET_CURRENT_CHATS_CACHE_STORE: (state, data) => {
     state.currentChatsCacheStore = data
   },

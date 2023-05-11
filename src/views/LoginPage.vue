@@ -112,6 +112,7 @@
 import { mapMutations, mapState } from 'vuex'
 import { login } from '../api/httpApiAdmin' // 管理端登录
 import { DeviceAuthReq } from '../api/webSocketApi' // 管理端登录
+import { createWebSocket, closeWebsocket } from '../websocket/websocket.js'
 
 export default {
   name: 'LoginPage',

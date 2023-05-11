@@ -130,6 +130,9 @@
       v-if="(currentInfoTab === 1 && members.length) || (currentInfoTab === 2 && shieldData.length)"></el-divider>
     <div class="room-action">
       <div class="room-til">群聊名称</div>
+      <!-- <div>{{user}}</div>
+      <div>--------</div>
+      <div>{{currentFriend}}</div> -->
       <div class="room-des" style="margin-bottom: 10px">
         <el-input v-if="isOwner" v-model="user.NickName" @blur="updateInfo(0, 'NickName')"></el-input>
         <i v-if="isOwner" class="el-icon-edit-outline"></i>
@@ -401,7 +404,7 @@ export default {
     isOwner() {
       if (this.currentFriend.ShowNameList) {
         return this.currentFriend.ShowNameList.find(
-          (item) => item.UserName === this.currentFriendId && item.Identity.includes(2)
+          (item) => item.UserName === this.currentWeChatId && item.Identity.includes(1)
         )
       }
       return false
@@ -418,7 +421,7 @@ export default {
   watch: {
     currentFriend: {
       handler(currentFriend) {
-        // console.log('currentFriend', currentFriend)
+        console.log('currentFriend', currentFriend)
         this.user = {
           ...currentFriend,
           NickName: currentFriend.NickName || '--',
@@ -549,6 +552,9 @@ export default {
         ChatRoomId: this.currentFriend.UserName, // 群聊id
         Action: type, // 指令
         Content: this.user[field]
+      }
+      if (type == 0) {
+        this.$store.commit('conversation/SET_GROUP_CHAT_NAME', content.Content);
       }
       if (type == 33) {
         this.$store.commit('conversation/SET_GROUP_CHAT_INFO', content.Content);

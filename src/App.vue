@@ -54,6 +54,10 @@ export default {
           resolve()
         })
       })
+    },
+    async getNewToken(){
+      let res=await getNewToken();
+      
     }
   },
   computed: {
@@ -70,6 +74,7 @@ export default {
   watch: {
     // 监听websocket的状态
     webSocketState(val) {
+
       switch (val) {
         case 0:
           console.log('正在建立连接，还没有完成 默认值')
@@ -82,6 +87,7 @@ export default {
 
           if (window.location.hash !== '#/login') {
             DeviceAuthReq(name, pass)
+            console.log('刷新');
           }
 
           break
@@ -169,25 +175,23 @@ export default {
       }
     }
   },
-  mounted() {
+  async mounted() {
     const iconDom = document.querySelector('link[rel="icon"]')
-
-    Promise.all([
+    await Promise.all([
       this.$store.dispatch('nedb/RemoveAllRooms'),
       this.$store.dispatch('nedb/RemoveAllFriends'),
       this.removeChatRecord()
-    ]).then(() => {
-      // 如过浏览器支持websocket 创建连接
-      if ('WebSocket' in window && window.top === window) {
-        createWebSocket(this.$store.state.url && `ws://${this.$store.state.url}:13088`)
-      } else if (!'WebSocket' in window) {
-        //  如果浏览器不支持WebSocket
-        this.$message({
-          message: '您的浏览器不支持 WebSocket!，请更换浏览器！',
-          type: 'error'
-        })
-      }
-    })
+    ])
+    // 如过浏览器支持websocket 创建连接
+    if ('WebSocket' in window && window.top === window) {
+      createWebSocket(this.$store.state.url && `ws://${this.$store.state.url}:13088`)
+    } else if (!'WebSocket' in window) {
+      //  如果浏览器不支持WebSocket
+      this.$message({
+        message: '您的浏览器不支持 WebSocket!，请更换浏览器！',
+        type: 'error'
+      })
+    }
 
     if (iconDom) {
       if (window.location.origin.includes('localhost')) {

@@ -13,6 +13,7 @@ import { MessageBox, Message } from 'element-ui'
 import Bus from '@/utils/bus'
 import Day from 'dayjs'
 export default function handler(e) {
+  console.log('hander');
   const msg = JSON.parse(e.data)
   const msgType = msg.msgType
   const message = msg.message ? JSON.parse(msg.message) : null

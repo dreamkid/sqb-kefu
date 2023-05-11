@@ -65,7 +65,7 @@
 import FirstPart from './components/first/index.vue'
 import SecondPart from './components/second/index.vue'
 import ThirdPart from './components/third/index.vue'
-import { GetWeChatsReq, weChatStatusGetApi, weChatStatusSaveApi } from '@/api/httpApi'
+import { GetWeChatsReq,getWeChatList, weChatStatusGetApi, weChatStatusSaveApi } from '@/api/httpApi'
 import { uniqueArryList } from '@/utils/util'
 
 import { mapGetters, mapState } from 'vuex'
@@ -138,11 +138,20 @@ export default {
     }
   },
   mounted() {
-    GetWeChatsReq(this.currentUser.UnionId).then((res) => {
-      if (res.code === 0 && res.data) {
-        const wechatsList = []
-        for (const wechatObj of res.data) {
+    getWeChatList(this.currentUser.UnionId).then((res) => {
+      if (res.code === "1000" && res.data.getWeChatListModelList) {
+        const wechatsList = [];
+        console.log(res.data.getWeChatListModelList);
+        for (const wechatObj of res.data.getWeChatListModelList) {
           const nwo = {}
+          
+          const newRes={};
+          newRes.wechatid = wechatObj.robotId;
+          newRes.robotAccount = wechatObj.robotId;
+          newRes.wechatnick = wechatObj.nickName;
+          newRes.isonline = wechatObj.onlineStatus=='ONLINE'?0:1;
+          newRes.deviceid = wechatObj.weChatId;
+          Object.assign(wechatObj,newRes)
           for (const key in wechatObj) {
             if (Object.hasOwnProperty.call(wechatObj, key)) {
               // const element = object[key];
@@ -174,7 +183,44 @@ export default {
         // 设置会话页面选择的微信
         this.$store.commit('conversation/SET_CURRENT_WECHAT', wechat)
       }
-    })
+    });
+    // GetWeChatsReq(this.currentUser.UnionId).then((res) => {
+    //   if (res.code === 0 && res.data) {
+    //     const wechatsList = []
+    //     for (const wechatObj of res.data) {
+    //       const nwo = {}
+    //       for (const key in wechatObj) {
+    //         if (Object.hasOwnProperty.call(wechatObj, key)) {
+    //           // const element = object[key];
+    //           if (key === 'avatar') {
+    //             nwo['Avatar'] = wechatObj.avatar
+    //           } else if (key === 'isonline') {
+    //             nwo['IsOnline'] = wechatObj.isonline === 0
+    //           } else if (key === 'wechatno') {
+    //             nwo['WeChatNo'] = wechatObj.wechatno
+    //           } else if (key === 'wechatnick') {
+    //             nwo['WeChatNick'] = wechatObj.wechatnick
+    //           } else if (key === 'wechatid') {
+    //             nwo['WeChatId'] = wechatObj.wechatid
+    //           } else {
+    //             nwo[key] = wechatObj[key]
+    //           }
+    //         }
+    //       }
+    //       wechatsList.push(nwo)
+    //     }
+
+    //     this.$store.commit('conversation/SET_WECHATS', wechatsList)
+    //     const onlineWeChats = wechatsList.filter((item) => item.IsOnline)
+    //     const wechat = wechatsList.filter((item) => item.IsOnline)[0] || {}
+    //     const wechatId = wechat.WeChatId
+    //     if (onlineWeChats.length === 0) {
+    //       this.$store.commit('SET_GLOBAL_LOADING', false)
+    //     }
+    //     // 设置会话页面选择的微信
+    //     this.$store.commit('conversation/SET_CURRENT_WECHAT', wechat)
+    //   }
+    // })
   },
   created() {
     this.$store.commit('SET_GLOBAL_LOADING', true)
