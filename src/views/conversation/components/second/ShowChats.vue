@@ -79,8 +79,8 @@
               <el-button v-if="memberDetail.IsFriend" @click="sendMessage(chat)">发消息</el-button>
               <el-button v-else @click="addFriend">添加通讯录</el-button>
               <el-button @click="atSomebody(chat)">@Ta</el-button>
-              <el-button>加入黑名单</el-button>
-              <el-button>加入白名单</el-button>
+              <!-- <el-button>加入黑名单</el-button>
+              <el-button>加入白名单</el-button> -->
               <el-button :style="{
                   backgroundColor: memberDetail.FriendShieldGroupEnable ? '#0CC160' : '#FF5722',
                   borderColor: memberDetail.FriendShieldGroupEnable ? '#0CC160' : '#FF5722'

@@ -8,13 +8,13 @@
       >
         话术中心
       </li>
-      <li
+      <!-- <li
         class="reply-nav-item"
         :class="{ 'reply-nav-item-checked': currentPage === 'Cut' }"
         @click="setCurrentPage('Cut')"
       >
         剪切板
-      </li>
+      </li> -->
       <li
         class="reply-nav-item"
         :class="{ 'reply-nav-item-checked': currentPage === 'FriendInfo' || currentPage === 'ChatRoomManager' }"

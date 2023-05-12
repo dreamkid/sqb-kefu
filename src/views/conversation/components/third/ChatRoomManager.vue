@@ -68,8 +68,8 @@
               <el-button v-if="memberDetail.FriendId != currentFriend.WeChatId" @click="addFriend">添加通讯录</el-button>
               <el-button v-if="memberDetail.FriendId != currentFriend.WeChatId" @click="atSomebody(item)">@Ta</el-button>
               <el-button v-else>发消息</el-button>
-              <el-button>加入黑名单</el-button>
-              <el-button>加入白名单</el-button>
+              <!-- <el-button>加入黑名单</el-button>
+              <el-button>加入白名单</el-button> -->
             </div>
           </div>
         </el-popover>
