@@ -569,7 +569,7 @@ export default {
       this.roomActionModal.type = type
       this.roomActionModal.visible = true
       if (type === 2) {
-        this.getMemberData()
+        // this.getMemberData()
       }
     },
     roomModalClose() {
@@ -672,19 +672,19 @@ export default {
       this.$message.success('发送成功')
     },
 
-    getMemberData() {
-      const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
-      membersGetApi({
-        weChatId: this.currentWeChatId,
-        chatRoomId: this.currentFriendId,
-        account: loginInfo.name,
-        memberList: this.currentFriend.ShowNameList.map((item) => item.UserName)
-      }).then((res) => {
-        if (res.code === 0) {
-          this.membersNotFriend = res.data || []
-        }
-      })
-    }
+    // getMemberData() {
+    //   const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
+    //   membersGetApi({
+    //     weChatId: this.currentWeChatId,
+    //     chatRoomId: this.currentFriendId,
+    //     account: loginInfo.name,
+    //     memberList: this.currentFriend.ShowNameList.map((item) => item.UserName)
+    //   }).then((res) => {
+    //     if (res.code === 0) {
+    //       this.membersNotFriend = res.data || []
+    //     }
+    //   })
+    // }
   }
 }
 </script>

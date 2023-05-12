@@ -957,10 +957,10 @@ export default {
         value: true
       })
 
-      const { data: total } = await getChatRecordTotalApi({
-        wxId: currentWeChatId,
-        friendId: currentFriendId
-      })
+      // const { data: total } = await getChatRecordTotalApi({
+      //   wxId: currentWeChatId,
+      //   friendId: currentFriendId
+      // })
       const chats = this.currentChatsCacheStore.filter(
         (item) => item.WeChatId === currentWeChatId && item.FriendId === currentFriendId
       )
@@ -2240,21 +2240,21 @@ export default {
       })
     },
 
-    async showInterval(chat) {
-      console.log(chat)
-      let content = JSON.parse(chat.Content)
-      this.intervalModal.records = []
-      const { code, data } = await getInternalApi({
-        wxId: this.currentWeChatId,
-        friendId: this.currentFriendId,
-        privateMsgId: content.PrivateMsgId
-      })
-      if (code === 0) {
-        this.intervalModal.records = data
-        this.intervalModal.visible = true
-        console.log(data)
-      }
-    },
+    // async showInterval(chat) {
+    //   console.log(chat)
+    //   let content = JSON.parse(chat.Content)
+    //   this.intervalModal.records = []
+    //   const { code, data } = await getInternalApi({
+    //     wxId: this.currentWeChatId,
+    //     friendId: this.currentFriendId,
+    //     privateMsgId: content.PrivateMsgId
+    //   })
+    //   if (code === 0) {
+    //     this.intervalModal.records = data
+    //     this.intervalModal.visible = true
+    //     console.log(data)
+    //   }
+    // },
     intervalModalClose() {
       this.intervalModal.visible = false
     },

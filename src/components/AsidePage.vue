@@ -440,17 +440,17 @@ export default {
         conversationSetNum: this.setModal.conversationNum,
         isFilterConversation: this.setModal.isFilterConversation
       })
-      const { code } = await setSaveApi({
-        account: loginInfo.name,
-        conversationNum: this.setModal.conversationNum,
-        conversationNumEnable: this.setModal.isConversationNum,
-        conversationGhEnable: this.setModal.isFilterConversation,
-        notSubWxConversation: this.setModal.isNotReceive,
-        subWxNotRedConversation: this.setModal.isNotClear
-      })
-      if (code === 0) {
-        this.$message.success('保存成功')
-      }
+      // const { code } = await setSaveApi({
+      //   account: loginInfo.name,
+      //   conversationNum: this.setModal.conversationNum,
+      //   conversationNumEnable: this.setModal.isConversationNum,
+      //   conversationGhEnable: this.setModal.isFilterConversation,
+      //   notSubWxConversation: this.setModal.isNotReceive,
+      //   subWxNotRedConversation: this.setModal.isNotClear
+      // })
+      // if (code === 0) {
+      //   this.$message.success('保存成功')
+      // }
       this.setModal.visible = false
     }
   },
