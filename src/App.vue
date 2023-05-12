@@ -106,12 +106,23 @@ export default {
               type: 'warning'
             })
               .then(() => {
-                window.location.reload()
+                // window.location.reload()
                 // 清空websocketToken
                 // store.commit('SET_WEBSOCKET_TOKEN', '')
                 // localStorage.removeItem('WEBSOCKET_TOKEN')
                 // localStorage.removeItem('CURRENT_USER')
                 // localStorage.removeItem('LOGIN_INFO')
+                Promise.all([
+                this.$store.dispatch('nedb/RemoveAllRooms'),
+                this.$store.dispatch('nedb/RemoveAllFriends'),
+                this.removeChatRecord()
+                ]).then(() => {
+                // 清除token
+                this.$store.commit('SET_WEBSOCKET_TOKEN', '')
+                localStorage.removeItem('WEBSOCKET_TOKEN')
+                localStorage.removeItem('CURRENT_USER')
+                localStorage.removeItem('LOGIN_INFO')
+        })
               })
               .catch(() => {})
           }
