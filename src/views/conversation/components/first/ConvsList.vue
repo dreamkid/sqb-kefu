@@ -433,6 +433,7 @@ export default {
     },
 
     conversationMouseEnter(message) {
+      console.log('hahah');
       this.currentHoverConversation = message
     },
     conversationMouseLeave() {
