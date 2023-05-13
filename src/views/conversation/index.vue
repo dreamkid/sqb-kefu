@@ -66,7 +66,7 @@ import FirstPart from './components/first/index.vue'
 import SecondPart from './components/second/index.vue'
 import ThirdPart from './components/third/index.vue'
 import { GetWeChatsReq,getWeChatList, weChatStatusGetApi, weChatStatusSaveApi } from '@/api/httpApi'
-import { uniqueArryList } from '@/utils/util'
+import { getNowTime, uniqueArryList } from '@/utils/util'
 
 import { mapGetters, mapState } from 'vuex'
 
@@ -138,7 +138,13 @@ export default {
     }
   },
   mounted() {
-    getWeChatList(this.currentUser.UnionId).then((res) => {
+    console.log('pppppp');
+    // getWeChatList(this.currentUser.UnionId).then((res) => {
+    getWeChatList({
+      method:'getWeChatList',
+      timestamp:getNowTime(),
+      sign:'sign'
+    }).then((res) => {
       if (res.code === "1000" && res.data.getWeChatListModelList) {
         const wechatsList = [];
         console.log(res.data.getWeChatListModelList);

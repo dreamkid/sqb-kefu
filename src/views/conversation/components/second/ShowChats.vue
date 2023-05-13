@@ -84,8 +84,9 @@
               <el-button :style="{
                   backgroundColor: memberDetail.FriendShieldGroupEnable ? '#0CC160' : '#FF5722',
                   borderColor: memberDetail.FriendShieldGroupEnable ? '#0CC160' : '#FF5722'
-                }" @click="shieldAction(chat, memberDetail.FriendShieldGroupEnable, chat.FriendId)">
-                {{ memberDetail.FriendShieldGroupEnable ? '解除屏蔽ta该群消息' : '屏蔽ta该群消息' }}
+                }" @click="shieldFlag?deleteShieldAction(chat):shieldAction(chat, memberDetail.FriendShieldGroupEnable, chat.FriendId)">
+                <!-- {{ memberDetail.FriendShieldGroupEnable ? '解除屏蔽ta该群消息' : '屏蔽ta该群消息' }} -->
+                {{ shieldFlag ? '解除屏蔽ta该群消息' : '屏蔽ta该群消息' }}
               </el-button>
               <el-button :style="{
                 backgroundColor: memberDetail.FriendShieldAllGroupEnable ? '#0CC160' : '#FF5722',
@@ -544,7 +545,10 @@ import {
   getInternalApi,
   getChatRecordTotalApi,
   shieldApi,
-  cancelShieldApi
+  shieldUserApi,
+  cancelShieldApi,
+  getGroupShieldList,
+  deleteShieldUserApi
 } from '@/api/httpApi'
 import {
   TriggerHistoryMsgPushTask,
@@ -560,7 +564,7 @@ import dayjs from 'dayjs'
 const imgError = require('assets/svg/conversation-image-error.svg')
 const transferMoney = require('assets/svg/conversation-transfer-money.svg')
 import Bus from '@/utils/bus'
-
+import { getNowTime } from '@/utils/util'
 import filters from '@/filters'
 const { timeFilter } = filters
 
@@ -570,6 +574,8 @@ export default {
   components: { RecordModal },
   data() {
     return {
+      shieldFlag:false,
+      shieldList:[],
       size: 10,
       notShow: ['System', 'Sys_LuckyMoney', 'RoomSystem', 'PaiYiPai', 'SystemPrivateMsg', 5, 16, 17, 26, 33], // 符合条件的将不显示头像
       revokeMap: ['Text', 'NameCard', 'Picture', 'Voice', 'Video', 'File', 'Link', 'WeApp'], // 符合的才显示撤回按钮
@@ -1125,8 +1131,35 @@ export default {
       //console.log(name)
       return name
     },
+    async getUserShieldList(){
+      let res=await getGroupShieldList({
+          method:'getCustomerConfig',
+          timestamp:getNowTime(),
+          sign:'sign',
+          robotWxId:this.currentWeChatId,
+          chatRoomId:this.currentFriendId,
+          friendId:this.memberDetail.FriendId
+      })
+      console.log(res);
+      if(res.code=='1000'){
+        this.shieldList=res.data.getCustomerShieldModelList||[];
+        if(res.data.getCustomerShieldModelList!=null){
+          console.log('true');
+          if(res.data.getCustomerShieldModelList.find(item=>item.chatRoomId==this.currentFriendId)){
+            this.shieldFlag = true
+          }else{
+            this.shieldFlag = false
+          }
+        }else{
+          console.log('false');
+          this.shieldFlag = false
+        }
+      }else{
+        this.shieldList=[]
+      }
+    },
     // 获取群成员详情
-    showMemberDetail(e, chat) {
+    async showMemberDetail(e, chat) {
       //名片
       if (!chat.IsSend && chat.FriendId && chat.FriendId.endsWith('@chatroom')) {
         this.popoverVisible[chat.MsgSvrId] = true
@@ -1136,6 +1169,7 @@ export default {
 
         this.currentFriendInfo = chat
         this.memberDetail = this.currentFriend.ShowNameList.find((item) => item.UserName === chat.ThisFriendId) || {}
+        // console.log(this.memberDetail);
         if (this.currentFriendId) {
           const member = chat.Content.split(':')[0]
           if (this.friendsMap[member]) {
@@ -1165,6 +1199,15 @@ export default {
             }
             this.getMemberDetail()
           }
+      // console.log(this.currentWeChatId);
+      console.log(this.memberDetail.FriendId);
+      this.getUserShieldList()
+      // console.log(id);
+      // console.log(chat);
+      // console.log(this.currentFriend);
+      // console.log(this.currentFriendId);
+      // console.log(this.currentFriend.ShowNameList.find((item) => item.UserName === chat.ThisFriendId));
+          
           //console.log('memberDetail', this.memberDetail)
         }
       }
@@ -2313,20 +2356,77 @@ export default {
     contentMouseLeave(e, chat) {
       this.currentContentItem = {}
     },
-
-    async shieldAction(chat, enable, chatRoomId) {
-      console.log(chat)
-      const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
-      const { code, data } = await (enable ? cancelShieldApi : shieldApi)({
-        account: loginInfo.name,
-        wechatId: this.currentWeChatId,
-        wxIds: enable ? [chat.ThisFriendId] : undefined,
-        friendId: enable ? undefined : chat.ThisFriendId,
-        chatRoomId: chat.FriendId,
-        chatAllEnable: !chatRoomId
+    async deleteShieldAction(chat){
+      let idList=[];
+      console.log(this.shieldList);
+      console.log(this.currentFriendId);
+      let item=this.shieldList.find(item=>{return item.chatRoomId==this.currentFriendId}).id;
+      console.log(item);
+      if(item)idList.push(item);
+      console.log(idList);
+      let res= await deleteShieldUserApi({
+        method:'updateCustomerShield',
+        timestamp:getNowTime(),
+        sign:'sign',
+        idList:encodeURIComponent(JSON.stringify(idList))
       })
-      if (code === 0) {
+      // if()
+      if(res.code=='1000'){
         this.$message.success('操作成功')
+        this.popoverVisible[chat.MsgSvrId] = false
+        const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
+
+        Promise.all([
+          this.$store.dispatch('conversation/resetCurrentChats', {
+            currentWeChatId: this.currentWeChatId,
+            currentFriendId: this.currentFriendId
+          }),
+          this.$store.dispatch('conversation/resetCurrentChatsCache', {
+            currentWeChatId: this.currentWeChatId,
+            currentFriendId: this.currentFriendId
+          })
+        ]).then(() => {
+          this.historyRecordHandle(
+            this.currentWeChatId,
+            this.currentFriendId,
+            this.currentUser.NickName,
+            loginInfo.name,
+            0,
+            0,
+            10
+          )
+        })
+      }
+    },
+    async shieldAction(chat, enable, chatRoomId) {
+      console.log(chat)//选中的群成员信息
+      console.log(enable)//选择的成员是否被屏蔽 false
+      console.log(chatRoomId);//群聊id
+      console.log(this.memberDetail);
+      // console.log(this.currentFriendInfo);
+      console.log(this.currentFriend);
+      // console.log(this.currentUser);
+      // console.log(this.currentWeChatId);
+      let friendId=this.memberDetail.FriendId;
+      const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
+      const { code, data } = await (enable ? cancelShieldApi : shieldUserApi)({
+        // account: loginInfo.name,
+        // wechatId: this.currentWeChatId,
+        // wxIds: enable ? [chat.ThisFriendId] : undefined,
+        // friendId: enable ? undefined : chat.ThisFriendId,
+        // chatRoomId: chat.FriendId,
+        // chatAllEnable: !chatRoomId
+        method:'addCustomerShield',
+        timestamp:getNowTime(),
+        sign:'sign',
+        robotWxId:this.currentWeChatId,
+        chatRoomId,//群id 
+        friendId,
+        chatAllEnable:chatRoomId?0:1  
+      })
+      if (code == '1000') {
+        this.$message.success('操作成功')
+        this.popoverVisible[chat.MsgSvrId] = false
         const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
 
         Promise.all([

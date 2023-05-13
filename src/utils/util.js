@@ -542,3 +542,17 @@ export const fistLetterUpper = (str) => {
 //     if (regEn.test(str) || regCn.test(str)) return false
 //     return true
 // }
+
+/**
+ * 获取当前的时间
+ */
+export const getNowTime = function(){
+  var date = new Date();
+  let Y = date.getFullYear() + '-';
+  let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+  let D = (date.getDate() < 10 ? ('0' + date.getDate()): date.getDate() )+ ' ';
+  let h = (date.getHours() < 10 ? ('0' + date.getHours()): date.getHours()) + ':';
+  let m = (date.getMinutes() < 10 ? ('0' + date.getMinutes()): date.getMinutes()) + ':';
+  let s = date.getSeconds() < 10 ? ('0' + date.getSeconds()): date.getSeconds();
+  return Y + M + D + h + m + s
+}

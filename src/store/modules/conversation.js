@@ -4,7 +4,7 @@ import { uniqueArryList, uniqueArryListSecond, getContent } from '@/utils/util'
 import { Message } from 'element-ui'
 import Bus from '@/utils/bus'
 import nedb from '@/db/nedb'
-import { getCurrentInternalApi } from '@/api/httpApi'
+import { getCurrentInternalApi, getGroupShieldList } from '@/api/httpApi'
 // initial state
 import Day from 'dayjs'
 const state = {
@@ -25,7 +25,7 @@ const state = {
 
   currentChatsStore: [],
   currentChatsCacheStore: [],
-  popoverVisible:{},
+  popoverVisible: {},
   content: '', // 当前要发送的内容， 默认为空
   remark: '', // 要@的群成员的id
   quoteMsg: '', // 引用消息的msgSvrId
@@ -53,7 +53,7 @@ const state = {
   publicTags: [], // 公共标签
   ghList: [], // 公众号列表
   ghMap: {}, // 公众号列表
-
+  groupShieldList: [],//群屏蔽列表
   //会话锁
   conversationLockMap: new Map()
 }
@@ -193,6 +193,15 @@ const getters = {
 
 // actions
 const actions = {
+  UpdateGroupShieldList: async ({ getters, commit, state }, params) => {
+    console.log('更新群屏蔽消息');
+    // const {method,timestamp,sign,robotWxId,chatRoomId,} =params;
+    let res = await getGroupShieldList(params);
+    if(res.code=='1000'){
+      console.log(res);
+      commit('SET_GROUP_SHIELD_LIST',res.data.getCustomerShieldModelList)
+    }
+  },
   // 更新当前好友的聊天记录
   UpdateCurrentChats: async ({ getters, commit, state }, chat) => {
     console.log('更新当前好友的聊天记录 UpdateCurrentChats', Day().format('YYYY-MM-DD HH:mm:ss'), chat)
@@ -514,6 +523,9 @@ const actions = {
 
 // mutations
 const mutations = {
+  SET_GROUP_SHIELD_LIST:(state,data) =>{
+    state.groupShieldList = data
+  },
   // 群聊信息设置
   SET_GROUP_CHAT_INFO: (state, data) => {
     Object.keys(state.currentFriends).forEach(content => {
@@ -907,6 +919,7 @@ const mutations = {
 
   // 会话汇总模式下所选的好友
   SET_CURRENT_FRIEND: (state, friendInfo) => {
+    console.log(999)
     state.currentFriend = friendInfo
   },
 

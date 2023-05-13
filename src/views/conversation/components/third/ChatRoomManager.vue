@@ -88,20 +88,31 @@
         <div class="room-member-name ellipsis">移除</div>
       </div>
     </div>
-    <div class="shield-members" v-if="currentInfoTab === 2 && shieldData.length">
+    <div class="shield-members" v-if="currentInfoTab === 2 ">
       <div class="shield-members-head">
+        <div class="shield-members-left">
         <el-dropdown @command="cancelShieldAction">
           <el-button size="mini" style="padding: 7px 5px">
-            批量取消屏蔽
+            {{selectText}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="single">取消当前群</el-dropdown-item>
-            <el-dropdown-item command="all">取消所有群</el-dropdown-item>
+            <el-dropdown-item :command="{text:'该群屏蔽列表',index:0}">该群屏蔽列表</el-dropdown-item>
+            <el-dropdown-item :command="{text:'所有群屏蔽列表',index:1}">所有群屏蔽列表</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-
         <span>已选 ({{ shieldDataSelected.length }})</span>
+        </div>
+        <div class="shield-members-right">
+          
+        <el-button
+          style="background-color: #0cc160; border: solid #0cc160 1px"
+          type="primary"
+          size="small"
+        >
+          取消屏蔽
+        </el-button>
+        </div>
       </div>
       <div class="shield-members-items">
         <div class="shield-members-items-head">
@@ -109,13 +120,23 @@
           <span class="shield-members-items-head-item">头像</span>
           <span class="shield-members-items-head-item">昵称</span>
         </div>
-        <div class="shield-members-item" v-for="(item, i) in shieldData" :key="i">
+        <div class="shield-members-item" v-for="(item, i) in mapDataList" :key="i">
           <el-checkbox v-model="item.checked" @change="(checked) => shieldItemSelect(checked, item)"></el-checkbox>
-          <el-avatar slot="reference" :size="45" shape="square" :src="item.FriendAvatar"></el-avatar>
-          <div>{{ item.FriendNick }}</div>
+          <el-avatar slot="reference" :size="45" shape="square" :src="item.avatar"></el-avatar>
+          <div>{{ item.friendName }}</div>
         </div>
       </div>
     </div>
+    <!-- <div v-if="currentInfoTab === 2 && shieldDataSource.length > 4"
+      class="room-control" @click="roomControl">
+      {{ isMore ? '收起' : '展开更多' }}
+      <i v-if="isMore" class="el-icon-arrow-up"></i>
+      <i v-else class="el-icon-arrow-down"></i>
+    </div>
+    <div v-if="isFixed" class="room-control-sticky" @click="roomControl">
+      收起
+      <i v-if="isMore" class="el-icon-arrow-up"></i>
+    </div> -->
     <div v-if="(currentInfoTab === 1 && membersData.length > 10) || (currentInfoTab === 2 && shieldDataSource.length > 4)"
       class="room-control" @click="roomControl">
       {{ isMore ? '收起' : '展开更多' }}
@@ -297,12 +318,18 @@
 import { mapGetters, mapState } from 'vuex'
 import { RequestContactsInfoTask } from '@/api/webSocketApi'
 import Bus from '@/utils/bus'
-import { membersGetApi, cancelShieldApi } from '@/api/httpApi'
+import { membersGetApi, cancelShieldApi,getGroupShieldList } from '@/api/httpApi'
+import { getNowTime } from '@/utils/util'
 export default {
   name: 'ChatRoomManager',
   components: {},
   data() {
     return {
+      selectText:'该群屏蔽列表',
+      selectIndex:0,
+      dataList:[],
+      mapDataList:[],
+
       members: [],
       isMore: false,
       isFixed: false,
@@ -338,9 +365,9 @@ export default {
       currentWeChatId: 'conversation/currentWeChatId',
       friendsMap: 'nedb/friendsMap',
       strangersMap: 'nedb/strangersMap',
-      currentWeChatId: 'conversation/currentWeChatId',
       atContent: 'conversation/content'
     }),
+
     friends: {
       get: function () {
         let data = []
@@ -427,6 +454,10 @@ export default {
           Notice: currentFriend.Notice || '--',
           ChatMeNick: currentFriend.ChatMeNick || '--'
         }
+        this.cancelShieldAction({
+          text:this.selectText,
+          index:this.selectIndex
+        })
         this.shieldDataSource = this.shieldDataOrigin =
           currentFriend && currentFriend.ShowNameList
             ? currentFriend.ShowNameList.filter(
@@ -475,19 +506,35 @@ export default {
       this.shieldDataSelected = checked ? this.shieldDataSource : []
     },
     async cancelShieldAction(command) {
+      this.selectIndex=command.index;
+      this.selectText=command.text;
       console.log(command)
+      console.log(this.currentWechatId);
+      console.log(this.currentFriendId);
+      console.log(this.currentFriend);
+      console.log(this.currentWechat);
       const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
-      const { code, data } = await cancelShieldApi({
-        account: loginInfo.name,
-        wechatId: this.currentWeChatId,
-        wxIds: this.shieldDataSelected.map((item) => item.UserName),
-        chatRoomId: this.currentFriendId,
-        chatAllEnable: command === 'all'
+      const chatRoomId=this.selectIndex==0?this.currentFriendId:''
+      const { code, data } = await getGroupShieldList({
+        // method: loginInfo.name,
+        // wechatId: this.currentWeChatId,
+        // wxIds: this.shieldDataSelected.map((item) => item.UserName),
+        // chatRoomId: this.currentFriendId,
+        // chatAllEnable: command === 'all'
+        method:'getCustomerShieldList',
+        timestamp:getNowTime(),
+        sign:'sign',
+        robotWxId:this.currentWechat.WeChatId,
+        chatRoomId
       })
-      if (code === 0) {
+      // console.log(data);
+      // if(code=='1000')
+      if (code === '1000') {
+        this.dataList=data.getCustomerShieldModelList;
+        this.mapDataList=data.getCustomerShieldModelList.length>4?data.getCustomerShieldModelList.slice(0,4):data.getCustomerShieldModelList
         this.$message.success('操作成功')
-        this.shieldAllChecked = this.shieldDataSelected.length === this.shieldDataSource.length
-        Bus.$emit('shieldCancel')
+        // this.shieldAllChecked = this.shieldDataSelected.length === this.shieldDataSource.length
+      //   Bus.$emit('shieldCancel')
       }
     },
     roomControl() {
@@ -850,7 +897,8 @@ export default {
   .shield-members {
     .shield-members-head {
       padding: 0px 8px;
-
+      display: flex;
+      justify-content: space-between;
       .el-button {
         margin-right: 8px;
       }
