@@ -164,6 +164,7 @@
         <img src="../../../../assets/images/answer/friendCircle.png" alt="朋友圈" />
         <FriendCircle ref="circleRef" />
       </div> -->
+      <el-checkbox v-model="internalChecked" @change="internalChange($event)">显示屏蔽消息</el-checkbox>
       <!-- <el-checkbox v-model="internalChecked" @change="internalChange($event)">内部消息</el-checkbox>
       <el-divider direction="vertical"></el-divider>
       <el-popover popper-class="help-popover" placement="bottom-start" trigger="hover">
