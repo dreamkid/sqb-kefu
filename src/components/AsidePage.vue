@@ -177,7 +177,8 @@ import {
 import phiz from '@/utils/phiz.js'
 import Bus from '@/utils/bus'
 import Ping from 'web-pingjs'
-import { setSaveApi } from '@/api/httpApi'
+// import { setSaveApi } from '@/api/httpApi'
+import { setSaveSystemApi } from '@/api/httpApi'
 export default {
   data() {
     return {
@@ -440,7 +441,15 @@ export default {
         conversationSetNum: this.setModal.conversationNum,
         isFilterConversation: this.setModal.isFilterConversation
       })
-      const { code } = await setSaveApi({
+      // const { code } = await setSaveApi({
+      //   account: loginInfo.name,
+      //   conversationNum: this.setModal.conversationNum,
+      //   conversationNumEnable: this.setModal.isConversationNum,
+      //   conversationGhEnable: this.setModal.isFilterConversation,
+      //   notSubWxConversation: this.setModal.isNotReceive,
+      //   subWxNotRedConversation: this.setModal.isNotClear
+      // })
+        const { code } = await setSaveSystemApi({
         account: loginInfo.name,
         conversationNum: this.setModal.conversationNum,
         conversationNumEnable: this.setModal.isConversationNum,
@@ -448,9 +457,11 @@ export default {
         notSubWxConversation: this.setModal.isNotReceive,
         subWxNotRedConversation: this.setModal.isNotClear
       })
+      
       if (code === 0) {
         this.$message.success('保存成功')
       }
+      
       this.setModal.visible = false
     }
   },

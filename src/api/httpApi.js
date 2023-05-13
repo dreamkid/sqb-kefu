@@ -504,6 +504,10 @@ export function setSaveApi(params) {
   return fetch.postJson('/pc/saveSystemConfig', params)
 }
 
+export function setSaveSystemApi(params){
+    return fetch.put('/optimuscore/customer/updateCustomerConfig',params)
+}
+
 export function versionGetApi(params) {
   return fetch.get('/api/project-version/getCustomerLastVersion', params)
 }
