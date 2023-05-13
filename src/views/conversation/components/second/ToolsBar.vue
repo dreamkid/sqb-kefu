@@ -164,7 +164,7 @@
         <img src="../../../../assets/images/answer/friendCircle.png" alt="朋友圈" />
         <FriendCircle ref="circleRef" />
       </div> -->
-      <el-checkbox v-model="internalChecked" @change="internalChange($event)">内部消息</el-checkbox>
+      <!-- <el-checkbox v-model="internalChecked" @change="internalChange($event)">内部消息</el-checkbox>
       <el-divider direction="vertical"></el-divider>
       <el-popover popper-class="help-popover" placement="bottom-start" trigger="hover">
         <div slot="reference" style="cursor: pointer">
@@ -184,7 +184,7 @@
             </el-menu-item>
           </el-menu>
         </div>
-      </el-popover>
+      </el-popover> -->
     </div>
 
     <!-- 创建群聊弹框 -->
@@ -748,7 +748,7 @@ export default {
   watch: {
     currentWeChatId(newVal, val) {
       this.internalChecked = this.currentFriend.PrivateMsgEnable
-      this.getSupportList()
+      // this.getSupportList()
     },
     currentFriendId(newVal, val) {
       this.internalChecked = this.currentFriend.PrivateMsgEnable
@@ -1347,41 +1347,41 @@ export default {
     async internalChange(checked, currentWeChatId = this.currentWeChatId, currentFriendId = this.currentFriendId) {
       //console.log(this.currentFriend)
       const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
-      const { code, data, msg } = await handleInternalApi({
-        account: loginInfo.name,
-        wxId: currentWeChatId,
-        chatRoomId: currentFriendId.endsWith('@chatroom') ? currentFriendId : undefined,
-        friendId: currentFriendId.endsWith('@chatroom') ? undefined : currentFriendId,
-        open: checked,
-        privateMsgId: this.currentFriend.PrivateMsgId
-      })
-      if (code === 0) {
-        this.$store.commit('conversation/UPDATE_SINGLE_CONVERSATION', {
-          ...this.currentFriend,
-          PrivateMsgEnable: checked,
-          PrivateMsgId: checked ? data : data.PrivateMsgId
-        })
+      // const { code, data, msg } = await handleInternalApi({
+      //   account: loginInfo.name,
+      //   wxId: currentWeChatId,
+      //   chatRoomId: currentFriendId.endsWith('@chatroom') ? currentFriendId : undefined,
+      //   friendId: currentFriendId.endsWith('@chatroom') ? undefined : currentFriendId,
+      //   open: checked,
+      //   privateMsgId: this.currentFriend.PrivateMsgId
+      // })
+      // if (code === 0) {
+      //   this.$store.commit('conversation/UPDATE_SINGLE_CONVERSATION', {
+      //     ...this.currentFriend,
+      //     PrivateMsgEnable: checked,
+      //     PrivateMsgId: checked ? data : data.PrivateMsgId
+      //   })
 
-        this.$store.commit('conversation/SET_CURRENT_FRIENDS', {
-          ...this.currentFriend,
-          PrivateMsgEnable: checked,
-          PrivateMsgId: checked ? data : data.PrivateMsgId
-        })
-      } else {
-        this.$message.error(msg)
-      }
+      //   this.$store.commit('conversation/SET_CURRENT_FRIENDS', {
+      //     ...this.currentFriend,
+      //     PrivateMsgEnable: checked,
+      //     PrivateMsgId: checked ? data : data.PrivateMsgId
+      //   })
+      // } else {
+      //   this.$message.error(msg)
+      // }
     },
-    async getSupportList() {
-      const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
-      const { code, data } = await getSupportListApi({
-        account: loginInfo.name,
-        wxId: this.currentWeChatId,
-        supportId: this.currentFriendId
-      })
-      if (code === 0) {
-        this.supportList = data || []
-      }
-    },
+    // async getSupportList() {
+    //   const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
+    //   const { code, data } = await getSupportListApi({
+    //     account: loginInfo.name,
+    //     wxId: this.currentWeChatId,
+    //     supportId: this.currentFriendId
+    //   })
+    //   if (code === 0) {
+    //     this.supportList = data || []
+    //   }
+    // },
     async support(item) {
       const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
       const { code, data } = await supportPostApi({

@@ -146,7 +146,7 @@
 
           <span class="system-set-modal-body-item-text">屏蔽公众号，订阅号和服务号的消息</span>
         </div>
-        <div class="system-set-modal-body-item">
+        <!-- <div class="system-set-modal-body-item">
           <el-checkbox v-model="setModal.isNotReceive"></el-checkbox>
 
           <span class="system-set-modal-body-item-text">不接受次级设备消息，支援消息除外</span>
@@ -154,7 +154,7 @@
         <div class="system-set-modal-body-item">
           <el-checkbox v-model="setModal.isNotClear"></el-checkbox>
           <span class="system-set-modal-body-item-text">此客服的主设备下面的其它客服账号点击消息不消除红点</span>
-        </div>
+        </div> -->
         <div class="system-set-modal-body-tip">（客服离线，该功能自动关闭）</div>
       </div>
       <div slot="footer">
@@ -440,17 +440,17 @@ export default {
         conversationSetNum: this.setModal.conversationNum,
         isFilterConversation: this.setModal.isFilterConversation
       })
-      const { code } = await setSaveApi({
-        account: loginInfo.name,
-        conversationNum: this.setModal.conversationNum,
-        conversationNumEnable: this.setModal.isConversationNum,
-        conversationGhEnable: this.setModal.isFilterConversation,
-        notSubWxConversation: this.setModal.isNotReceive,
-        subWxNotRedConversation: this.setModal.isNotClear
-      })
-      if (code === 0) {
-        this.$message.success('保存成功')
-      }
+      // const { code } = await setSaveApi({
+      //   account: loginInfo.name,
+      //   conversationNum: this.setModal.conversationNum,
+      //   conversationNumEnable: this.setModal.isConversationNum,
+      //   conversationGhEnable: this.setModal.isFilterConversation,
+      //   notSubWxConversation: this.setModal.isNotReceive,
+      //   subWxNotRedConversation: this.setModal.isNotClear
+      // })
+      // if (code === 0) {
+      //   this.$message.success('保存成功')
+      // }
       this.setModal.visible = false
     }
   },

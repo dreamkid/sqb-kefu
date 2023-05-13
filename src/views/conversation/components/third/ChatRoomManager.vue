@@ -8,7 +8,6 @@
       <el-input v-model="searchOptions.val" prefix-icon="el-icon-search" placeholder="搜索群成员" clearable
         @input="search"></el-input>
     </div>
-
     <div class="room-members" v-if="currentInfoTab === 1">
       <div class="room-member" v-for="(item, i) in members" :key="i">
         <el-popover v-model="popoverVisible[item.UserName]" trigger="manual" placement="left" width="305">
@@ -69,8 +68,8 @@
               <el-button v-if="memberDetail.FriendId != currentFriend.WeChatId" @click="addFriend">添加通讯录</el-button>
               <el-button v-if="memberDetail.FriendId != currentFriend.WeChatId" @click="atSomebody(item)">@Ta</el-button>
               <el-button v-else>发消息</el-button>
-              <el-button>加入黑名单</el-button>
-              <el-button>加入白名单</el-button>
+              <!-- <el-button>加入黑名单</el-button>
+              <el-button>加入白名单</el-button> -->
             </div>
           </div>
         </el-popover>
@@ -617,7 +616,7 @@ export default {
       this.roomActionModal.type = type
       this.roomActionModal.visible = true
       if (type === 2) {
-        this.getMemberData()
+        // this.getMemberData()
       }
     },
     roomModalClose() {
@@ -720,19 +719,19 @@ export default {
       this.$message.success('发送成功')
     },
 
-    getMemberData() {
-      const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
-      membersGetApi({
-        weChatId: this.currentWeChatId,
-        chatRoomId: this.currentFriendId,
-        account: loginInfo.name,
-        memberList: this.currentFriend.ShowNameList.map((item) => item.UserName)
-      }).then((res) => {
-        if (res.code === 0) {
-          this.membersNotFriend = res.data || []
-        }
-      })
-    }
+    // getMemberData() {
+    //   const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
+    //   membersGetApi({
+    //     weChatId: this.currentWeChatId,
+    //     chatRoomId: this.currentFriendId,
+    //     account: loginInfo.name,
+    //     memberList: this.currentFriend.ShowNameList.map((item) => item.UserName)
+    //   }).then((res) => {
+    //     if (res.code === 0) {
+    //       this.membersNotFriend = res.data || []
+    //     }
+    //   })
+    // }
   }
 }
 </script>
