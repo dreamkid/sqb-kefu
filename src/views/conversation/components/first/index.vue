@@ -165,6 +165,7 @@ export default {
     },
     refresh() {
       if (this.currentWeChatId) {
+        
         const loginInfo = localStorage.getItem('LOGIN_INFO') ? JSON.parse(localStorage.getItem('LOGIN_INFO')) : {}
 
         this.$store.commit('conversation/SET_REFRESH_BUTTON', false)

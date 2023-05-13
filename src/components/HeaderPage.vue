@@ -358,10 +358,10 @@ export default {
   },
   methods: {
     Day,
-    async getVersion() {
-      const { data, code } = await getVersionApi()
-      this.version = data || {}
-    },
+    // async getVersion() {
+    //   const { data, code } = await getVersionApi()
+    //   this.version = data || {}
+    // },
     async getVersionCurrent() {
       const { data, code } = await versionGetApi()
       this.versionCurrent = data
@@ -592,7 +592,7 @@ export default {
     }
   },
   mounted() {
-    this.getVersion()
+    // this.getVersion()
     this.getVersionCurrent()
   }
 }

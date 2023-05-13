@@ -172,6 +172,9 @@ function apiAxios(method, url, params) {
       paramsSerializer: (params) => {
         return qs.stringify(params, { indices: false })
       },
+      headers: {
+          'Content-Type': 'application/json'
+      },
       data: method !== 'GET' && method !== 'DELETE' ? qs.stringify(params) : null
     })
       .then((res) => {

@@ -42,7 +42,7 @@ export function GetWeChatsReq(unionId) {
  * @param {Number} unionId 用户的unionId
  */
  export function getWeChatList(params) {
-  return fetch.get('/optimuscore/wechat/getWeChatList',{method:'getWeChatList',timestamp:'',sign:'sign'})
+  return fetch.get('/optimuscore/wechat/getWeChatList', params)
 }
 /**
  * 获取公共标签
@@ -518,7 +518,18 @@ export function shieldApi(params) {
 export function cancelShieldApi(params) {
   return fetch.postJson('/api/shield-user/batchCancelShield', params)
 }
-
+//屏蔽群成员
+export function shieldUserApi(params) {
+  return fetch.postJson('optimuscore/customer/addCustomerShield', params)
+}
+//获取群屏蔽列表
+export function getGroupShieldList(params) {
+  return fetch.get('optimuscore/customer/getCustomerShieldList', params)
+}
+//取消屏蔽
+export function deleteShieldUserApi(params) {
+  return fetch.delete('optimuscore/customer/deleteCustomerShield', params)
+}
 export function friendDetailsApi(params) {
   return fetch.postJson('/api/wx-friend-circle/refuseSns', params)
 }
